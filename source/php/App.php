@@ -7,7 +7,7 @@ class App
     public function __construct()
     {
         //Warn for missing api-keys, end execution
-        if(!defined('ALGOLIAINDEX_API_KEY')||!defined('ALGOLIAINDEX_API_KEY')) {
+        if(!defined('ALGOLIAINDEX_API_KEY')||!defined('ALGOLIAINDEX_INDEX_NAME')) {
             add_action('admin_notices', array($this, 'displayAdminNotice'));
             return; 
         }
