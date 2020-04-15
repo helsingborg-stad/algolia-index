@@ -129,17 +129,24 @@ class Index
      */
     private static function streamlineRecord($record) {
         
-        $record = array_intersect_key($record, array_flip([
-          'ID',
-          'post_title',
-          'content',
-          'permalink',
-          'post_modified',
-        ]));
+      //List of fields to compare
+      $comparables = applyFilters('AlgoliaIndex/Record',[
+        'ID',
+        'post_title',
+        'post_excerpt',
+        'content',
+        'permalink',
+        'images'
+      ]); 
 
-        array_multisort($record); 
+      //Prepare comparables
+      $record = array_intersect_key($record, array_flip($comparables));
 
-        return $record;
+      //Sort (resolves different orders)
+      array_multisort($record); 
+
+      //Send back
+      return $record;
     }
 
     /**
@@ -174,7 +181,7 @@ class Index
               $post['blog_id'] = get_current_blog_id();
             }
 
-            return $post; 
+            return apply_filters('AlgoliaIndex/Record', $post, $postId); 
         }
 
         return null;
