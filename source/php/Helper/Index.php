@@ -21,8 +21,8 @@ class Index
 
         //Connect to account
         $client = \Algolia\AlgoliaSearch\SearchClient::create(
-            '',
-            ''
+            ALGOLIAINDEX_APPLICATION_ID,
+            ALGOLIAINDEX_API_KEY
         );
         
         //Select index
