@@ -5,14 +5,12 @@ namespace AlgoliaIndex\Helper;
 class Id
 {
 
-    private static $_index = null; 
-
     /**
-     * Get the index
+     * Get the id
      *
      * @return void
      */
-    public static function recordId($postId) {
+    public static function getId($postId) {
       if(is_multisite()) {
         return str_replace(".", "-", parse_url(network_site_url())['host']) . "-" . get_current_blog_id() . "-" . $postId; 
       }
