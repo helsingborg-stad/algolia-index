@@ -2,11 +2,11 @@
 
 /**
  * Plugin Name:       Algolia Index
- * Plugin URI:        (#plugin_url#)
+ * Plugin URI:        https://github.com/helsingborg-stad/algolia-index
  * Description:       Manages algolia index (with ms-support and mixed indexes)
  * Version:           1.0.0
  * Author:            Sebastian Thulin
- * Author URI:        (#plugin_author_url#)
+ * Author URI:        https://github.com/sebastianthulin
  * License:           MIT
  * License URI:       https://opensource.org/licenses/MIT
  * Text Domain:       algolia-index
