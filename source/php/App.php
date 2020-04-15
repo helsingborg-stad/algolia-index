@@ -14,7 +14,8 @@ class App
         
         //Run plugin
         new \AlgoliaIndex\Index(); 
-        new \AlgoliaIndex\Search(); 
+        new \AlgoliaIndex\Search();
+        new \AlgoliaIndex\Settings();
 
         //Cli api (bulk actions)
         if(defined('WP_CLI') && WP_CLI == true) {

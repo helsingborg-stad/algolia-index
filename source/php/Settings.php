@@ -28,7 +28,6 @@ class Settings
 
     //Send settings 
     $index->setSettings(['searchableAttributes' => $searchableAttributes]);
-
   }
 }
 
