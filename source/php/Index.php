@@ -46,11 +46,32 @@ class Index
           //return;
         }
 
+        //Get post data
+        $post = self::getPost($postId); 
+
         //Index post
-        Instance::getIndex()->saveObject(
-          self::getPost($postId),
-          ['objectIDKey' => 'uuid']
-        ); 
+        if(self::recordToLarge($post)) {
+
+          $splitRecord = self::splitRecord($post); 
+
+          if(is_array($splitRecord) && !empty($splitRecord)) {
+            foreach($splitRecord as $post) {
+              Instance::getIndex()->saveObject(
+                $post,
+                ['objectIDKey' => 'ObjectID']
+              ); 
+            }
+          }
+
+        } else {
+
+          Instance::getIndex()->saveObject(
+            $post,
+            ['objectIDKey' => 'ObjectID']
+          ); 
+
+        }
+        
     }
 
     /**
@@ -195,12 +216,10 @@ class Index
     }
 
     private static function recordToLarge($record) {
-
       return false; 
     }
 
     private static function splitRecord($record) {
-
-      return $record; 
+      return [$record]; 
     }
 }
