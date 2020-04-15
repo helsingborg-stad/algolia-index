@@ -8,7 +8,7 @@ class Search
 {
     public function __construct()
     {
-      add_action( 'pre_get_posts', array($this, 'doAlgoliaQuery'));
+      add_action('pre_get_posts', array($this, 'doAlgoliaQuery'));
     }
      
     /**
