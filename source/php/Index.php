@@ -88,6 +88,11 @@ class Index
             return false; 
         }
 
+        //Anything else
+        if(apply_filters('AlgoliaIndex/ShouldIndex', false, $post)) {
+          return false; 
+        }
+
         return true; 
     }
 
