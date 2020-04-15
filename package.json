@@ -1,7 +1,7 @@
 {
-  "name": "(#plugin_slug#)",
+  "name": "algolia-index",
   "version": "1.0.0",
-  "description": "(#plugin_description#)",
+  "description": "Manages algolia index (with ms-support and mixed indexes)",
   "main": "",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1"
@@ -10,7 +10,7 @@
     "type": "git",
     "url": "https://github.com/Svanmark/Wordpress-Plugin-Boilerplate.git"
   },
-  "author": "(#plugin_author#)",
+  "author": "Sebastian Thulin",
   "license": "MIT",
   "bugs": {
     "url": "https://github.com/Svanmark/Wordpress-Plugin-Boilerplate/issues"
