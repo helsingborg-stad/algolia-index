@@ -89,7 +89,7 @@ class Index
         }
 
         //Anything else
-        if(apply_filters('AlgoliaIndex/ShouldIndex', false, $post)) {
+        if(!apply_filters('AlgoliaIndex/ShouldIndex', true, $post)) {
           return false; 
         }
 
