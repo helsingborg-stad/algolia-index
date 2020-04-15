@@ -3,6 +3,7 @@
 namespace AlgoliaIndex;
 
 use \AlgoliaIndex\Helper\Index as Instance;
+use \AlgoliaIndex\Helper\Id as Id;
 
 class Index
 {
@@ -25,7 +26,7 @@ class Index
      * @return void
      */
     public function delete($postId) {
-      Instance::getIndex()->deleteObject($postId);
+      Instance::getIndex()->deleteObject(Id::getId($postId));
     } 
 
     /**
@@ -48,7 +49,7 @@ class Index
         //Index post
         Instance::getIndex()->saveObject(
             self::getPost($postId),
-            ['objectIDKey' => 'ID']
+            ['objectIDKey' => 'uuid']
         ); 
     }
 
@@ -105,7 +106,7 @@ class Index
     private static function hasChanged($postId) {
         
         //Make search
-        $response = (object) Instance::getIndex()->getObjects([$postId]);
+        $response = (object) Instance::getIndex()->getObjects([Id::getId($postId)]);
 
         //Get hit
         if(is_array($response->hits) && !empty($response->hits)) {
@@ -166,7 +167,8 @@ class Index
             
             //Post details
             $post =  array(
-                'ID' => $post->ID,
+                'uuid' => Id::getId($postId),
+                'id' => $post->ID,
                 'post_title' => apply_filters('the_title', $post->post_title),
                 'post_excerpt' => get_the_excerpt($post),
                 'content' => strip_tags(apply_filters('the_content', $post->post_content)),
