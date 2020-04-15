@@ -58,7 +58,7 @@ class Index
             foreach($splitRecord as $post) {
               Instance::getIndex()->saveObject(
                 $post,
-                ['objectIDKey' => 'ObjectID']
+                ['objectIDKey' => 'uuid']
               ); 
             }
           }
@@ -67,7 +67,7 @@ class Index
 
           Instance::getIndex()->saveObject(
             $post,
-            ['objectIDKey' => 'ObjectID']
+            ['objectIDKey' => 'uuid']
           ); 
 
         }
@@ -170,7 +170,7 @@ class Index
       $record = array_intersect_key($record, array_flip($comparables));
 
       //Sort (resolves different orders)
-      array_multisort($record); 
+      array_multisort($record);
 
       //Send back
       return $record;
@@ -188,7 +188,7 @@ class Index
             
             //Post details
             $post =  array(
-                'objectID' => Id::getId($postId),
+                'uuid' => Id::getId($postId),
                 'ID' => $post->ID,
                 'post_title' => apply_filters('the_title', $post->post_title),
                 'post_excerpt' => get_the_excerpt($post),
@@ -197,7 +197,7 @@ class Index
                 'post_date' => strtotime($post->post_date),
                 'post_date_formatted' => date(get_option('date_format'), strtotime($post->post_date)),
                 'post_modified' => strtotime($post->post_modified),
-                'images' => [get_the_post_thumbnail_url($post)]
+                'images' => array_filter([get_the_post_thumbnail_url($post)])
             ); 
 
             //Site
