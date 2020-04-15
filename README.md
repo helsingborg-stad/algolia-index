@@ -13,7 +13,7 @@ Manages algolia index (with ms-support and mixed indexes). This is intended to b
 
  1. Install with: "composer require helsingborg-stad/algolia-index"
  2. Run composer install inside the plugin. 
- 3. Add required definitkions 
+ 3. Add required definitions of constants.  
  3. Run wp-cli job "wp algolia-index bulk"
 
 ## Constants

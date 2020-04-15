@@ -38,18 +38,18 @@ class Index
     public function index($postId) {
         //Check if is indexable post
         if(!self::shouldIndex($postId)) {
-            return;
+          //return;
         }
 
         //Check if the new post differs from indexed record
         if(!self::hasChanged($postId)) {
-            return;
+          //return;
         }
-        
+
         //Index post
         Instance::getIndex()->saveObject(
-            self::getPost($postId),
-            ['objectIDKey' => 'uuid']
+          self::getPost($postId),
+          ['objectIDKey' => 'uuid']
         ); 
     }
 
@@ -167,8 +167,8 @@ class Index
             
             //Post details
             $post =  array(
-                'uuid' => Id::getId($postId),
-                'id' => $post->ID,
+                'objectID' => Id::getId($postId),
+                'ID' => $post->ID,
                 'post_title' => apply_filters('the_title', $post->post_title),
                 'post_excerpt' => get_the_excerpt($post),
                 'content' => strip_tags(apply_filters('the_content', $post->post_content)),
@@ -192,5 +192,15 @@ class Index
         }
 
         return null;
+    }
+
+    private static function recordToLarge($record) {
+
+      return false; 
+    }
+
+    private static function splitRecord($record) {
+
+      return $record; 
     }
 }
