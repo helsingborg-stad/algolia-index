@@ -121,7 +121,8 @@ class Index
     }
 
     /**
-     * Streamline record
+     * Streamline record, basicly tells what to use 
+     * to compare posts for update checking. 
      *
      * @param array $record
      * @return array
@@ -129,11 +130,11 @@ class Index
     private static function streamlineRecord($record) {
         
         $record = array_intersect_key($record, array_flip([
-            'ID',
-            'title',
-            'content',
-            'url',
-            'created',
+          'ID',
+          'post_title',
+          'content',
+          'permalink',
+          'post_modified',
         ]));
 
         array_multisort($record); 
@@ -150,14 +151,30 @@ class Index
     private static function getPost($postId) {
 
         if($post = get_post($postId)) {
-            return array(
+            
+            //Post details
+            $post =  array(
                 'ID' => $post->ID,
-                'title' => $post->post_title,
-                'content' => $post->post_content,
-                'url' => get_permalink($post->ID),
-                'created' => $post->post_date,
-                'modified' => $post->post_modified
+                'post_title' => apply_filters('the_title', $post->post_title),
+                'post_excerpt' => get_the_excerpt($post),
+                'content' => strip_tags(apply_filters('the_content', $post->post_content)),
+                'permalink' => get_permalink($post->ID),
+                'post_date' => strtotime($post->post_date),
+                'post_date_formatted' => date(get_option('date_format'), strtotime($post->post_date)),
+                'post_modified' => strtotime($post->post_modified),
+                'images' => get_the_post_thumbnail_url($post)
             ); 
+
+            //Site
+            $post['origin_site'] = get_bloginfo('name'); 
+            $post['origin_site_url'] = get_bloginfo('name'); 
+
+            //Add blog id
+            if(is_multisite()) {
+              $post['blog_id'] = get_current_blog_id();
+            }
+
+            return $post; 
         }
 
         return null;
