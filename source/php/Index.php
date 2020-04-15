@@ -169,12 +169,12 @@ class Index
                 'post_date' => strtotime($post->post_date),
                 'post_date_formatted' => date(get_option('date_format'), strtotime($post->post_date)),
                 'post_modified' => strtotime($post->post_modified),
-                'images' => get_the_post_thumbnail_url($post)
+                'images' => [get_the_post_thumbnail_url($post)]
             ); 
 
             //Site
             $post['origin_site'] = get_bloginfo('name'); 
-            $post['origin_site_url'] = get_bloginfo('name'); 
+            $post['origin_site_url'] = get_bloginfo('url'); 
 
             //Add blog id
             if(is_multisite()) {
