@@ -8,12 +8,11 @@ Manages algolia index (with ms-support and mixed indexes). This is intended to b
  - Support mixed indices (multiple wordpress sites in the same index). 
 
  TODO: Large record splitting. 
- TODO: UUID on posts.
 
  ## Installation
 
- 1. Clone the plugin
- 2. Run composer install
+ 1. Install with: "composer require helsingborg-stad/algolia-index"
+ 2. Run composer install inside the plugin. 
  3. Add required definitkions 
  3. Run wp-cli job "wp algolia-index bulk"
 
@@ -33,5 +32,7 @@ Manages algolia index (with ms-support and mixed indexes). This is intended to b
 
 ## WP CLI
 
-- wp algolia-index bulk: Index all pages/posts on site.
-- wp algolia-index clear: Clear index.
+- wp algolia-index build: Index all pages/posts on site.
+- wp algolia-index rebuild: Clear index. And run new build. *
+
+* This action is not fully compatible with multiple sites in one shared index! Sites that share the same index will be cleared but not reindexed. 
