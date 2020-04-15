@@ -36,3 +36,5 @@ $loader->register();
 
 // Start application
 new AlgoliaIndex\App();
+
+
