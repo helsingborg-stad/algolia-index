@@ -19,7 +19,7 @@ class Settings
   public function sendSearchableAttributes() {
   
     // Define searchable attributes
-    $searchableAttributes = applyFilters('AlgoliaIndex/SearchableAttributes',[
+    $searchableAttributes = apply_filters('AlgoliaIndex/SearchableAttributes',[
       'post_title',
       'post_excerpt',
       'content',
@@ -27,7 +27,7 @@ class Settings
     ]);
 
     //Send settings 
-    $index->setSettings(['searchableAttributes' => $searchableAttributes]);
+    Instance::getIndex()->setSettings(['searchableAttributes' => $searchableAttributes]);
   }
 }
 

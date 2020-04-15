@@ -130,7 +130,7 @@ class Index
     private static function streamlineRecord($record) {
         
       //List of fields to compare
-      $comparables = applyFilters('AlgoliaIndex/Record',[
+      $comparables = apply_filters('AlgoliaIndex/Compare',[
         'ID',
         'post_title',
         'post_excerpt',
