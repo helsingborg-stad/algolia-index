@@ -1,5 +1,32 @@
 {
+    "name": "helsingborg-stad/algolia-index",
+    "license": "MIT",
+    "authors": [
+        {
+            "name": "Sebastian Thulin",
+            "email": "sebastian.thulin@helsingborg.se"
+        }
+    ],
+    "minimum-stability" : "stable",
+    "repositories": [
+        {
+            "type":"composer",
+            "url":"https://packagist.org"
+        },
+        {
+            "type":"composer",
+            "url":"https://wpackagist.org"
+        }
+    ],
     "require": {
         "algolia/algoliasearch-client-php": "^2.6"
+    },
+
+    "extra": {
+        "wordpress-install-dir": "wp",
+        "installer-paths": {
+            "wp-content/plugins/{$name}": ["type:wordpress-plugin"],
+            "wp-content/themes/{$name}": ["type:wordpress-theme"]
+        }
     }
 }
