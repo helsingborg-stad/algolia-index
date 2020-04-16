@@ -4,17 +4,17 @@ Manages algolia index (with ms-support and mixed indexes). This is intended to b
 
  - Replaces algolia search on the front-end with algolia. 
  - Index all public searchable posts on post update or creation.
- - WpCLI jobs to bulk update all posts on the site. 
+ - WpCLI jobs to bulk index all posts on the site. 
  - Support mixed indices (multiple wordpress sites in the same index). 
-
- TODO: Large record splitting. 
+ - Large record splitting (content field). 
+ - Implements "needs update" check before querying algolia, to save costly updates. The functionality is not implemented on split records. 
 
  ## Installation
 
  1. Install with: "composer require helsingborg-stad/algolia-index"
  2. Run composer install inside the plugin. 
  3. Add required definitions of constants.  
- 3. Run wp-cli job "wp algolia-index bulk"
+ 3. Run wp-cli job "wp algolia-index build"
 
 ## Constants
 
@@ -36,4 +36,4 @@ Manages algolia index (with ms-support and mixed indexes). This is intended to b
 - wp algolia-index build: Index all pages/posts on site.
 - wp algolia-index rebuild: Clear index. And run new build. *
 
-* This action is not fully compatible with multiple sites in one shared index! Sites that share the same index will be cleared but not reindexed. 
+* This action is not fully compatible with multiple sites in one shared index! Sites that share the same index will be cleared but not reindexed.
