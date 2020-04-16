@@ -28,6 +28,9 @@ class Index
         //Remove
         add_action('delete_post', array($this, 'delete'), self::$_priority);
         add_action('wp_trash_post', array($this, 'delete'), self::$_priority);
+
+        //Bulk action
+        add_action('algolia_index_post_id', array($this, 'index'), self::$_priority, 1);
     }
 
     /**
@@ -65,6 +68,7 @@ class Index
      * @return void
      */
     public function index($postId) {
+
         
         //Check if is indexable post
         if(!self::shouldIndex($postId)) {
@@ -160,9 +164,17 @@ class Index
 
         //Get result
         if(isset($response->results) && is_array($response->results) && !empty($response->results)) {
-            $indexRecord = array_pop($response->results); 
+            $indexRecord = is_array($response->results) ? array_pop($response->results) : []; 
         } else {
             $indexRecord = [];
+        }
+
+        //Get stored record
+        $storedRecord = self::getPost($postId); 
+
+        //Check for null responses, update needed
+        if(is_null($indexRecord) || is_null($storedRecord)) {
+          return true; 
         }
 
         //Filter out everything that dosen't matter
@@ -196,7 +208,7 @@ class Index
       ]); 
 
       //Prepare comparables
-      $record = array_intersect_key($record, array_flip($comparables));
+      $record = (array) array_intersect_key($record, array_flip($comparables));
 
       //Sort (resolves different orders)
       array_multisort($record);
@@ -215,17 +227,17 @@ class Index
       if($post = get_post($postId)) {
 
           //Tags 
-          $tags = array_map(function (WP_Term $term) {
+          $tags = array_map(function (\WP_Term $term) {
             return $term->name;
           }, wp_get_post_terms($postId, 'post_tag'));
 
           //Categories 
-          $categories = array_map(function (WP_Term $term) {
+          $categories = array_map(function (\WP_Term $term) {
             return $term->name;
-          }, wp_get_post_terms($postId, 'category'));
+          }, wp_get_post_terms($postId, 'category')); 
 
           //Post details
-          $post =  array(
+          $result =  array(
             'uuid' => Id::getId($postId),
             'ID' => $post->ID,
             'post_title' => apply_filters('the_title', $post->post_title),
@@ -242,15 +254,15 @@ class Index
           ); 
 
           //Site
-          $post['origin_site'] = get_bloginfo('name'); 
-          $post['origin_site_url'] = get_bloginfo('url'); 
+          $result['origin_site'] = get_bloginfo('name'); 
+          $result['origin_site_url'] = get_bloginfo('url'); 
 
           //Add blog id
           if(is_multisite()) {
-            $post['blog_id'] = get_current_blog_id();
+            $result['blog_id'] = get_current_blog_id();
           }
 
-          return apply_filters('AlgoliaIndex/Record', $post, $postId); 
+          return apply_filters('AlgoliaIndex/Record', $result, $postId); 
       }
 
       return null;
