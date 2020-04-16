@@ -3,17 +3,19 @@
 namespace AlgoliaIndex;
 
 use \AlgoliaIndex\Helper\Index as Instance;
+use \AlgoliaIndex\Helper\Options as Options;
 
 class Settings {
 
 	private $algolia_index_options;
 
 	public function __construct() {
-    
+    //Local settings 
 		add_action('admin_menu', array( $this, 'addPluginPage'));
     add_action('admin_init', array( $this, 'pluginPageInit'));
     
-    //add_action('admin_init', array($this, 'sendSearchableAttributes'));
+    //Algolia settings
+    add_action('admin_init', array($this, 'sendSearchableAttributes'));
   }
   
   /**
@@ -22,6 +24,11 @@ class Settings {
    * @return void
    */
   public function sendSearchableAttributes() {
+
+    //Limit to on submit settings form. 
+    if(!isset($_GET['sendAlgoliaSettings'])) {
+      return; 
+    }
   
     // Define searchable attributes
     $searchableAttributes = apply_filters('AlgoliaIndex/SearchableAttributes',[
@@ -42,8 +49,8 @@ class Settings {
    */
 	public function addPluginPage() {
 		add_options_page(
-			_e("Algolia Index", 'algolia-index'),
-			_e("Algolia Index", 'algolia-index'),
+			__("Algolia Index", 'algolia-index'),
+			__("Algolia Index", 'algolia-index'),
 			'manage_options',
 			'algolia-index',
 			array( $this, 'algoliaIndexCreateAdminPage' )
@@ -60,10 +67,7 @@ class Settings {
       <div class="wrap">
         <h2><?php _e("Algolia Index", 'algolia-index'); ?></h2>
         <p><?php _e("Settings for indexing to algolia.", 'algolia-index'); ?></p>
-        
-        <?php settings_errors(); ?>
-
-        <form method="post" action="options.php">
+        <form method="post" action="options.php?sendAlgoliaSettings=true">
           <?php
             settings_fields('algolia_index_option_group');
             do_settings_sections('algolia-index-admin');
@@ -88,34 +92,41 @@ class Settings {
     );
     
     add_settings_section(
-			'algolia_index_setting_section', // id
-			'Settings', // title
-			array( $this, 'algoliaSettingsSectionCallback' ), // callback
-			'algolia-index-admin' // page
+			'algolia_index_setting_section',
+			'Settings',
+			array( $this, 'algoliaSettingsSectionCallback' ),
+			'algolia-index-admin'
 		);
 
 		add_settings_field(
-			'application_id', // id
-			'Application ID (May be overridden by ALGOLIAINDEX_APPLICATION_ID constant)', // title
-			array( $this, 'algoliaApplicationIdCallback' ), // callback
+			'application_id',
+			'Application ID<small style="display:block; font-weight: normal;">May be overridden by ALGOLIAINDEX_APPLICATION_ID constant<small>',
+			array( $this, 'algoliaApplicationIdCallback' ),
 			'algolia-index-admin',
 			'algolia_index_setting_section'
 		);
 
 		add_settings_field(
 			'api_key', // id
-			'API Key (May be overridden by ALGOLIAINDEX_API_KEY constant)', // title
-			array( $this, 'algoliaApiKeyCallback' ), // callback
-			'algolia-index-admin', // page
-			'algolia_index_setting_section' // section
+			'API Key<small style="display:block; font-weight: normal;">May be overridden by ALGOLIAINDEX_API_KEY constant</small>', // title
+			array( $this, 'algoliaApiKeyCallback' ),
+			'algolia-index-admin',
+			'algolia_index_setting_section'
 		);
 
 		add_settings_field(
 			'index_name',
-			'Index name (Leave blank to create one for you)',
+			'Index name<small style="display:block; font-weight: normal;">May be overridden by ALGOLIAINDEX_INDEX_NAME constant. Leave blank to create one for you.</small>',
 			array( $this, 'algoliaIndexNameCallback' ),
 			'algolia-index-admin',
 			'algolia_index_setting_section'
+    );
+    
+    add_settings_section(
+			'algolia_index_summary_section',
+			'Summary',
+			array( $this, 'algoliaSettingsSummaryCallback' ),
+			'algolia-index-admin'
 		);
 	}
 
@@ -129,6 +140,20 @@ class Settings {
   }
 
   /**
+   * Display summary 
+   *
+   * @return void
+   */
+  public function algoliaSettingsSummaryCallback () {
+    echo '<p>The following data is used by the algoia integration.</p>'; 
+    echo '<table>';
+      echo '<tr><td><strong>Application ID: </strong></td><td>' . Options::applicationId() .'</td></tr>'; 
+      echo '<tr><td><strong>API Key: </strong></td><td>' . Options::apiKey() .'</td></tr>'; 
+      echo '<tr><td><strong>Index Name: </strong></td><td>' . Options::indexName() .'</td></tr>'; 
+    echo '</table>';
+  }
+
+  /**
    * Sanitize 
    *
    * @param  array $input             Unsanitized values
@@ -137,15 +162,15 @@ class Settings {
 	public function algoliaIndexSanitize($input) {
     $sanitary_values = array();
     
-		if (isset( $input['application_id'])) {
+		if(isset( $input['application_id'])) {
 			$sanitary_values['application_id'] = sanitize_text_field($input['application_id']);
 		}
 
-		if (isset( $input['api_key'])) {
+		if(isset( $input['api_key'])) {
 			$sanitary_values['api_key'] = sanitize_text_field($input['api_key']);
 		}
 
-		if (isset($input['index_name'])) {
+		if(isset($input['index_name'])) {
 			$sanitary_values['index_name'] = sanitize_text_field($input['index_name']);
 		}
 

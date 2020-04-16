@@ -2,12 +2,15 @@
 
 namespace AlgoliaIndex;
 
+use \AlgoliaIndex\Helper\Options as Options;
+
 class App
 {
+
     public function __construct()
     {
         //Warn for missing api-keys, end execution
-        if(!defined('ALGOLIAINDEX_API_KEY')||!defined('ALGOLIAINDEX_API_KEY')) {
+        if(empty(Options::applicationId())||empty(Options::apiKey())) {
             add_action('admin_notices', array($this, 'displayAdminNotice'));
             return; 
         }
