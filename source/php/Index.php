@@ -158,9 +158,9 @@ class Index
         //Make search
         $response = (object) Instance::getIndex()->getObjects([Id::getId($postId)]);
 
-        //Get hit
-        if(isset($response->hits) && is_array($response->hits) && !empty($response->hits)) {
-            $indexRecord = array_pop($response->hits); 
+        //Get result
+        if(isset($response->results) && is_array($response->results) && !empty($response->results)) {
+            $indexRecord = array_pop($response->results); 
         } else {
             $indexRecord = [];
         }

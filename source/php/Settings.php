@@ -147,7 +147,7 @@ class Settings {
   public function algoliaSettingsSummaryCallback () {
     echo '<p>The following data is used by the algoia integration.</p>'; 
     echo '<table>';
-      echo '<tr><td><strong>Application ID: </strong></td><td>' . Options::applicationId() .'</td></tr>'; 
+      echo '<tr><td style="min-width: 100px;"><strong>Application ID: </strong></td><td>' . Options::applicationId() .'</td></tr>'; 
       echo '<tr><td><strong>API Key: </strong></td><td>' . Options::apiKey() .'</td></tr>'; 
       echo '<tr><td><strong>Index Name: </strong></td><td>' . Options::indexName() .'</td></tr>'; 
     echo '</table>';
