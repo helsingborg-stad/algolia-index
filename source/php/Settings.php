@@ -42,8 +42,8 @@ class Settings {
    */
 	public function addPluginPage() {
 		add_options_page(
-			'Algolia Index',
-			'Algolia Index',
+			_e("Algolia Index", 'algolia-index'),
+			_e("Algolia Index", 'algolia-index'),
 			'manage_options',
 			'algolia-index',
 			array( $this, 'algoliaIndexCreateAdminPage' )
