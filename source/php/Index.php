@@ -7,7 +7,9 @@ use \AlgoliaIndex\Helper\Id as Id;
 
 class Index
 {
-    private static $_priority = 999; 
+    private static $_priority = 999;
+    private static $partialObjectDistinctKey = "partial_object_distinct_key"; 
+    private static $_nearMaxLimitSize = 9999; 
 
     public function __construct()
     {
@@ -25,8 +27,16 @@ class Index
      * @param int $postId
      * @return void
      */
-    public function delete($postId) {
-      Instance::getIndex()->deleteObject(Id::getId($postId));
+    public function delete($postId, $isSplitRecord = false) {
+      if($isSplitRecord) {
+
+
+        echo "SPL"; 
+
+        Instance::getIndex()->deleteBy(['filters' => self::$partialObjectDistinctKey . ':' . Id::getId($postId)]); //Delete split records
+      } else {
+        Instance::getIndex()->deleteObject(Id::getId($postId)); //Delete normal records
+      }
     } 
 
     /**
@@ -36,40 +46,39 @@ class Index
      * @return void
      */
     public function index($postId) {
+        
         //Check if is indexable post
         if(!self::shouldIndex($postId)) {
           //return;
         }
 
-        //Check if the new post differs from indexed record
-        if(!self::hasChanged($postId)) {
-          //return;
+        //Delete split record (no check if has changed)
+        if($isSplitRecord = self::isSplitRecord($postId)) {
+          self::delete($postId, $isSplitRecord); 
+        } else {
+          //Check if the new post differs from indexed record
+          if(!self::hasChanged($postId)) {
+            //return;
+          }
         }
 
         //Get post data
-        $post = self::getPost($postId); 
-
+        $post = self::getPost($postId);
+        
         //Index post
         if(self::recordToLarge($post)) {
-
           $splitRecord = self::splitRecord($post); 
-
           if(is_array($splitRecord) && !empty($splitRecord)) {
-            foreach($splitRecord as $post) {
-              Instance::getIndex()->saveObject(
-                $post,
-                ['objectIDKey' => 'uuid']
-              ); 
-            }
+            Instance::getIndex()->saveObjects(
+              $splitRecord,
+              ['objectIDKey' => 'uuid']
+            ); 
           }
-
         } else {
-
           Instance::getIndex()->saveObject(
             $post,
             ['objectIDKey' => 'uuid']
           ); 
-
         }
         
     }
@@ -130,7 +139,7 @@ class Index
         $response = (object) Instance::getIndex()->getObjects([Id::getId($postId)]);
 
         //Get hit
-        if(is_array($response->hits) && !empty($response->hits)) {
+        if(isset($response->hits) && is_array($response->hits) && !empty($response->hits)) {
             $indexRecord = array_pop($response->hits); 
         } else {
             $indexRecord = [];
@@ -185,19 +194,32 @@ class Index
     private static function getPost($postId) {
 
         if($post = get_post($postId)) {
+
+            //Tags 
+            $tags = array_map(function (WP_Term $term) {
+              return $term->name;
+            }, wp_get_post_terms($postId, 'post_tag'));
+
+            //Categories 
+            $categories = array_map(function (WP_Term $term) {
+              return $term->name;
+            }, wp_get_post_terms($postId, 'category'));
+
             
             //Post details
             $post =  array(
-                'uuid' => Id::getId($postId),
-                'ID' => $post->ID,
-                'post_title' => apply_filters('the_title', $post->post_title),
-                'post_excerpt' => get_the_excerpt($post),
-                'content' => strip_tags(apply_filters('the_content', $post->post_content)),
-                'permalink' => get_permalink($post->ID),
-                'post_date' => strtotime($post->post_date),
-                'post_date_formatted' => date(get_option('date_format'), strtotime($post->post_date)),
-                'post_modified' => strtotime($post->post_modified),
-                'images' => array_filter([get_the_post_thumbnail_url($post)])
+              'uuid' => Id::getId($postId),
+              'ID' => $post->ID,
+              'post_title' => apply_filters('the_title', $post->post_title),
+              'post_excerpt' => get_the_excerpt($post),
+              'content' => strip_tags(apply_filters('the_content', $post->post_content)),
+              'permalink' => get_permalink($post->ID),
+              'post_date' => strtotime($post->post_date),
+              'post_date_formatted' => date(get_option('date_format'), strtotime($post->post_date)),
+              'post_modified' => strtotime($post->post_modified),
+              'images' => array_filter([get_the_post_thumbnail_url($post)]),
+              'tags' => $tags,
+              'categories' => $categories,
             ); 
 
             //Site
@@ -215,11 +237,66 @@ class Index
         return null;
     }
 
+    /**
+     * Check if the record is close to the limit of algolia max record size.
+     * This applies for most plans.
+     *
+     * @param array $record
+     * @return void
+     */
     private static function recordToLarge($record) {
-      return false; 
+      if(mb_strlen(serialize((array) $record), '8bit') >= self::$_nearMaxLimitSize) {
+        return apply_filters('AlgoliaIndex/RecordToLarge', true); 
+      }
+      return apply_filters('AlgoliaIndex/RecordToLarge', false); ; 
     }
 
+    /**
+     * Split record in multiple chunks. 
+     *
+     * @param [type] $record
+     * @return void
+     */
     private static function splitRecord($record) {
-      return [$record]; 
+
+      //Response storage
+      $result = array();
+
+      //Calculation of parts
+      $contentSize    = mb_strlen($record['content'], '8bit'); 
+      $additionalSize = mb_strlen(serialize(array_diff_key($record, array_flip(['content']))), '8bit');
+      $numberOfChunks = (int) ceil($contentSize / (self::$_nearMaxLimitSize - $additionalSize)); 
+      $contentChunks = str_split($record['content'], $contentSize/$numberOfChunks); 
+
+      //Create final object to be indexed
+      foreach($contentChunks as $chunkKey => $chunk) {
+        $result[$chunkKey] = array_merge($record, [
+          'content' => $chunk,
+          self::$partialObjectDistinctKey => $record['uuid']
+        ]);
+        if($chunkKey != 0) {
+          $result[$chunkKey]['uuid'] = $record['uuid'] . "-part-" . $chunkKey; 
+        }
+      }
+
+      return !empty($result) ? $result : $record; 
+      
+    }
+
+    /**
+     * Check if stored record in algolia is a split record. 
+     *
+     * @param int $postId
+     * @return boolean
+     */
+    private static function isSplitRecord($postId) {
+      
+      $response = (object) Instance::getIndex()->getObjects([Id::getId($postId)]);
+
+      if(array_key_exists(self::$partialObjectDistinctKey, $response->results[0])) {
+        return true;
+      }
+
+      return false; 
     }
 }
