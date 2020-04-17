@@ -10,6 +10,12 @@ jobs:
     steps:
       - uses: actions/checkout@v2
 
+      - name: PHP CS Fixer
+        uses: StephaneBour/actions-php-cs-fixer@1.0
+        with:
+          # Fix php
+          dir: 'source/'
+
       - name: PHP Code Style (phpcs)
         uses: chindit/actions-phpcs@master
         with:
