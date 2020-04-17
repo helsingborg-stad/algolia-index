@@ -15,9 +15,3 @@ jobs:
         with:
           # Fix php
           dir: 'source/'
-
-      - name: PHP Code Style (phpcs)
-        uses: chindit/actions-phpcs@master
-        with:
-          # Folder to check code style
-          dir: source/
