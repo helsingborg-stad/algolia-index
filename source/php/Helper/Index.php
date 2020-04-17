@@ -29,5 +29,18 @@ class Index
         //Select index
         return self::$_index = $client->initIndex(Options::indexName());
     }
+
+    public static function indexablePostTypes() {
+        
+        $postTypes =  array_diff(
+            (array) get_post_types([
+                'public' => true,
+                'exclude_from_search' => false
+            ]),
+            ['attachment']
+        ); 
+
+        return apply_filters('AlgoliaIndex/IndexablePostTypes', $postTypes); 
+    }
     
 }

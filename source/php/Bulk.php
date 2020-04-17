@@ -3,6 +3,7 @@
 namespace AlgoliaIndex;
 
 use \AlgoliaIndex\Helper\Index as Instance;
+use \AlgoliaIndex\Helper\Indexable as Indexable;
 
 class Bulk
 {
@@ -18,8 +19,8 @@ class Bulk
     /**
      * Build index
      *
-     * @param [type] $args
-     * @param [type] $assocArgs
+     * @param array $args
+     * @param array $assocArgs
      * @return void
      */
     public function build($args, $assocArgs) {
@@ -32,7 +33,7 @@ class Bulk
 
         \WP_CLI::log("Starting index build..."); 
 
-        $postTypes = $this->getPostTypes();
+        $postTypes = Indexable::postTypes();
 
         if(is_array($postTypes) && !empty($postTypes)) {
             foreach($postTypes as $postType) {
@@ -40,7 +41,7 @@ class Bulk
                 if(is_array($posts) && !empty($posts)) {
                     foreach($posts as $post) {
                         \WP_CLI::log("Indexing '" . $post->post_title . "' of posttype " . $postType);
-                        do_action('algolia_index_post_id', $post->ID);
+                        do_action('AlgoliaIndex/IndexPostId', $post->ID);
                     }
                 }
             }
@@ -62,20 +63,5 @@ class Bulk
             'post_type' => $postType, 
             'numberposts' => -1
         ]);
-    }
-
-    /**
-     * Get all public post types
-     *
-     * @return array Registered public posttypes. 
-     */
-    public function getPostTypes() {
-        return array_diff(
-            (array) get_post_types([
-                'public' => true,
-                'exclude_from_search' => false
-            ]),
-            ['attachment']
-        ); 
     }
 }

@@ -4,6 +4,7 @@ namespace AlgoliaIndex;
 
 use \AlgoliaIndex\Helper\Index as Instance;
 use \AlgoliaIndex\Helper\Id as Id;
+use \AlgoliaIndex\Helper\Indexable as Indexable;
 
 class Index
 {
@@ -30,7 +31,7 @@ class Index
         add_action('wp_trash_post', array($this, 'delete'), self::$_priority);
 
         //Bulk action
-        add_action('algolia_index_post_id', array($this, 'index'), self::$_priority, 1);
+        add_action('AlgoliaIndex/IndexPostId', array($this, 'index'), self::$_priority, 1);
     }
 
     /**
@@ -68,7 +69,6 @@ class Index
      * @return void
      */
     public function index($postId) {
-
         
         //Check if is indexable post
         if(!self::shouldIndex($postId)) {
@@ -131,16 +131,8 @@ class Index
         }
 
         //Get post type details
-        $postType = get_post_type_object(get_post_type($post));
-
-        //Only index public posts
-        if($postType->public === false) {
-            return false; 
-        }
-
-        //Do not index excluded posts
-        if($postType->exclude_from_search === true) {
-            return false; 
+        if(!in_array(get_post_type($post), Indexable::postTypes())) {
+          return false; 
         }
 
         //Anything else
