@@ -242,7 +242,8 @@ class Index
             'images' => array_filter([get_the_post_thumbnail_url($post)]),
             'tags' => $tags,
             'categories' => $categories,
-            'algolia_timestamp' => current_time("Y-m-d H:i:s")
+            'algolia_timestamp' => current_time("Y-m-d H:i:s"),
+            'post_type' => get_post_type($postId)
           ); 
 
           //Site

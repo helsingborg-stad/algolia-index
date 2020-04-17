@@ -22,7 +22,6 @@
     "require": {
         "algolia/algoliasearch-client-php": "^2.6"
     },
-
     "extra": {
         "wordpress-install-dir": "wp",
         "installer-paths": {
