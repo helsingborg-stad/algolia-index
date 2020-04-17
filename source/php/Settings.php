@@ -36,6 +36,8 @@ class Settings {
       'post_excerpt',
       'content',
       'permalink',
+      'tags',
+      'categories'
     ]);
 
     //Send settings 
