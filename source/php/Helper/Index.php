@@ -6,17 +6,18 @@ use \AlgoliaIndex\Helper\Options as Options;
 
 class Index
 {
-    private static $_index = null; 
+    private static $_index = null;
 
     /**
      * Get the index
      *
      * @return AlgoliaIndex
      */
-    public static function getIndex() {
+    public static function getIndex()
+    {
         
         //Used cached instance
-        if(!is_null(self::$_index)) {
+        if (!is_null(self::$_index)) {
             return self::$_index;
         }
 

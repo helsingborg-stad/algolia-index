@@ -8,7 +8,7 @@ use \AlgoliaIndex\Helper\Indexable as Indexable;
 class Bulk
 {
 
-    private $prefix = "algolia-index" . " "; 
+    private $prefix = "algolia-index" . " ";
 
     public function __construct()
     {
@@ -23,44 +23,46 @@ class Bulk
      * @param array $assocArgs
      * @return void
      */
-    public function build($args, $assocArgs) {
+    public function build($args, $assocArgs)
+    {
 
         // Clear index if flag is true
-        if(isset($assocArgs['clearindex']) && $assocArgs['clearindex'] == "true") {
+        if (isset($assocArgs['clearindex']) && $assocArgs['clearindex'] == "true") {
             \WP_CLI::log("Clearing index...");
-            Instance::getIndex()->clearObjects(); 
+            Instance::getIndex()->clearObjects();
         }
 
-        \WP_CLI::log("Starting index build..."); 
+        \WP_CLI::log("Starting index build...");
 
         $postTypes = Indexable::postTypes();
 
-        if(is_array($postTypes) && !empty($postTypes)) {
-            foreach($postTypes as $postType) {
-                $posts = (array) $this->getPosts($postType); 
-                if(is_array($posts) && !empty($posts)) {
-                    foreach($posts as $post) {
+        if (is_array($postTypes) && !empty($postTypes)) {
+            foreach ($postTypes as $postType) {
+                $posts = (array) $this->getPosts($postType);
+                if (is_array($posts) && !empty($posts)) {
+                    foreach ($posts as $post) {
                         \WP_CLI::log("Indexing '" . $post->post_title . "' of posttype " . $postType);
                         do_action('AlgoliaIndex/IndexPostId', $post->ID);
                     }
                 }
             }
         } else {
-            \WP_CLI::error("Could not find any indexable posttypes. This will occur when no content is public."); 
+            \WP_CLI::error("Could not find any indexable posttypes. This will occur when no content is public.");
         }
 
         \WP_CLI::success("Build done!");
     }
 
     /**
-     * Get posts to try to index. 
+     * Get posts to try to index.
      *
      * @param string $postType
-     * @return array 
+     * @return array
      */
-    public function getPosts($postType) {
+    public function getPosts($postType)
+    {
         return get_posts([
-            'post_type' => $postType, 
+            'post_type' => $postType,
             'numberposts' => -1
         ]);
     }
