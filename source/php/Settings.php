@@ -108,15 +108,21 @@ class Settings
 
         add_settings_field(
             'application_id',
-            'Application ID<small style="display:block; font-weight: normal;">May be overridden by ALGOLIAINDEX_APPLICATION_ID constant<small>',
+            'Application ID
+            <small style="display:block; font-weight: normal;">
+              May be overridden by ALGOLIAINDEX_APPLICATION_ID constant
+            <small>',
             array( $this, 'algoliaApplicationIdCallback' ),
             'algolia-index-admin',
             'algolia_index_setting_section'
         );
 
         add_settings_field(
-            'api_key', // id
-            'API Key<small style="display:block; font-weight: normal;">May be overridden by ALGOLIAINDEX_API_KEY constant</small>', // title
+            'api_key',
+            'API Key
+            <small style="display:block; font-weight: normal;">
+              May be overridden by ALGOLIAINDEX_API_KEY constant
+            </small>',
             array( $this, 'algoliaApiKeyCallback' ),
             'algolia-index-admin',
             'algolia_index_setting_section'
@@ -124,7 +130,10 @@ class Settings
 
         add_settings_field(
             'index_name',
-            'Index name<small style="display:block; font-weight: normal;">May be overridden by ALGOLIAINDEX_INDEX_NAME constant. Leave blank to create one for you.</small>',
+            'Index name
+            <small style="display:block; font-weight: normal;">
+              May be overridden by ALGOLIAINDEX_INDEX_NAME constant. Leave blank to create one for you.
+            </small>',
             array( $this, 'algoliaIndexNameCallback' ),
             'algolia-index-admin',
             'algolia_index_setting_section'
@@ -157,7 +166,10 @@ class Settings
     {
         echo '<p>The following data is used by the algoia integration.</p>';
         echo '<table>';
-        echo '<tr><td style="min-width: 100px;"><strong>Application ID: </strong></td><td>' . Options::applicationId() .'</td></tr>';
+        echo '
+          <tr><td style="min-width: 100px;">
+            <strong>Application ID: </strong>
+          </td><td>' . Options::applicationId() .'</td></tr>';
         echo '<tr><td><strong>API Key: </strong></td><td>' . Options::apiKey() .'</td></tr>';
         echo '<tr><td><strong>Index Name: </strong></td><td>' . Options::indexName() .'</td></tr>';
         echo '</table>';
