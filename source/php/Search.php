@@ -20,15 +20,22 @@ class Search
     public function doAlgoliaQuery($query)
     {
         if (!is_admin() && $query->is_main_query() && $query->is_search && self::isSearchPage()) {
+
+
+          //Backend search active
+          $backendSearchActive = apply_Filters('AlgoliaIndex/BackendSearchActive', true);
+
           //Query algolia for search result
-            $query->query_vars['post__in'] = self::getPostIdArray(
-                Instance::getIndex()->search(
-                    $query->query['s']
-                )['hits']
-            );
+            if($backendSearchActive) {
+                $query->query_vars['post__in'] = self::getPostIdArray(
+                    Instance::getIndex()->search(
+                        $query->query['s']
+                    )['hits']
+                );
+            }
 
           //Query (locally) for a post that dosen't exist, if empty response from algolia
-            if (empty($query->query_vars['post__in'])) {
+            if (!$backendSearchActive || empty($query->query_vars['post__in'])) {
                 $query->query_vars['post__in'] = PHP_INT_MAX; //Fake post id
                 $query->set('posts_per_page', 1); //Limit to 1 result
             }
