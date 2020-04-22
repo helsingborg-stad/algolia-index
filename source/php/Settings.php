@@ -17,7 +17,7 @@ class Settings
         add_action('admin_init', array( $this, 'pluginPageInit'));
     
     //Algolia settings
-        add_action('admin_init', array($this, 'sendSearchableAttributes'));
+        add_action('admin_init', array($this, 'sendAlgoliaSettings'));
     }
   
   /**
@@ -25,7 +25,7 @@ class Settings
    *
    * @return void
    */
-    public function sendSearchableAttributes()
+    public function sendAlgoliaSettings()
     {
 
       //Limit to on submit settings form.
@@ -35,18 +35,38 @@ class Settings
   
       // Define searchable attributes
         $searchableAttributes = apply_filters('AlgoliaIndex/SearchableAttributes', [
-        'post_title',
-        'post_excerpt',
-        'content',
-        'permalink',
-        'tags',
-        'categories'
+          'post_title',
+          'post_excerpt',
+          'content',
+          'permalink',
+          'tags',
+          'categories'
         ]);
 
-      //Send settings
-        Instance::getIndex()->setSettings(['searchableAttributes' => $searchableAttributes]);
-    }
+      //AttributesToSnippet
+        $attributesToSnippet = apply_filters('AlgoliaIndex/AttributesToSnippet', [
+          'content:40',
+          'permalink:15',
+          'post_title:7'
+        ]);
 
+      //Facetingattributes
+      $attributesForFaceting = apply_filters('AlgoliaIndex/AttributesToSnippet', [
+        'searchable(origin_site)'
+      ]);
+
+      //Send settings
+        Instance::getIndex()->setSettings([
+          'searchableAttributes'  => $searchableAttributes,
+          'attributeForDistinct'  => 'partial_object_distinct_key',
+          'distinct'              => true,
+          'hitsPerPage'           => apply_filters('AlgoliaIndex/HitsPerPage', 15),
+          'attributesToSnippet'   => $attributesToSnippet,
+          'snippetEllipsisText'   => apply_filters('AlgoliaIndex/SnippetEllipsisText', "..."),
+          'attributesForFaceting' => $attributesForFaceting,
+        ]);
+    }
+    
   /**
    * Register the plugins page
    *
