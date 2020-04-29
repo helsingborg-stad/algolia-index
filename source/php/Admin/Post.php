@@ -2,6 +2,8 @@
 
 namespace AlgoliaIndex\Admin;
 
+use \AlgoliaIndex\Helper\Indexable as Indexable;
+
 class Post
 {
 
@@ -27,9 +29,9 @@ class Post
       global $post;
 
       //Only show if not set to not index
-      /*if (!$this->shouldIndexPost(true, $post, false)) {
-          return false;
-      }*/ 
+      if (!in_array($post->post_type, Indexable::postTypes())) {
+        return false;
+      }
 
       if (is_object($post) && isset($post->ID)) {
         $checked = checked(true, get_post_meta($post->ID, 'exclude_from_search', true), false);
