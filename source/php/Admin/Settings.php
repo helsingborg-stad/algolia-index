@@ -1,6 +1,6 @@
 <?php
 
-namespace AlgoliaIndex;
+namespace AlgoliaIndex\Admin;
 
 use \AlgoliaIndex\Helper\Index as Instance;
 use \AlgoliaIndex\Helper\Options as Options;

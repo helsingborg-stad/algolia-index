@@ -70,6 +70,11 @@ class Index
      */
     public function index($postId)
     {
+
+        //Delete if checked
+        if(isset($_POST['exclude-from-search']) && $_POST['exclude-from-search'] == "true") {
+            return self::delete($postId); 
+        }
         
         //Check if is indexable post
         if (!self::shouldIndex($postId)) {
@@ -133,6 +138,11 @@ class Index
 
         //Get post type details
         if (!in_array(get_post_type($post), Indexable::postTypes())) {
+            return false;
+        }
+
+        //Do not index checkbox
+        if(get_post_meta($post->ID, 'exclude_from_search', true)) {
             return false;
         }
 
@@ -246,7 +256,7 @@ class Index
               'tags' => $tags,
               'categories' => $categories,
               'algolia_timestamp' => current_time("Y-m-d H:i:s"),
-              'post_type' => get_post_type($postId)
+              'post_type' => get_post_type($postId),
             );
 
             //Site
