@@ -149,6 +149,17 @@ class Settings
         );
 
         add_settings_field(
+          'public_api_key',
+          'Public API Key
+          <small style="display:block; font-weight: normal;">
+            May be overridden by ALGOLIAINDEX_API_KEY constant
+          </small>',
+          array( $this, 'algoliaPublicApiKeyCallback' ),
+          'algolia-index-admin',
+          'algolia_index_setting_section'
+      );
+
+        add_settings_field(
             'index_name',
             'Index name
             <small style="display:block; font-weight: normal;">
@@ -191,6 +202,7 @@ class Settings
             <strong>Application ID: </strong>
           </td><td>' . Options::applicationId() .'</td></tr>';
         echo '<tr><td><strong>API Key: </strong></td><td>' . Options::apiKey() .'</td></tr>';
+        echo '<tr><td><strong>Public API Key: </strong></td><td>' . Options::PublicApiKey() .'</td></tr>';
         echo '<tr><td><strong>Index Name: </strong></td><td>' . Options::indexName() .'</td></tr>';
         echo '</table>';
     }
@@ -211,6 +223,10 @@ class Settings
 
         if (isset($input['api_key'])) {
             $sanitary_values['api_key'] = sanitize_text_field($input['api_key']);
+        }
+
+        if (isset($input['public_api_key'])) {
+          $sanitary_values['public_api_key'] = sanitize_text_field($input['public_api_key']);
         }
 
         if (isset($input['index_name'])) {
@@ -243,6 +259,19 @@ class Settings
         printf(
             '<input class="regular-text" type="text" name="algolia_index[api_key]" id="api_key" value="%s">',
             isset($this->algolia_index_options['api_key']) ? esc_attr($this->algolia_index_options['api_key']) : ''
+        );
+    }
+
+  /**
+   * Print field, with data.
+   *
+   * @return void
+   */
+    public function algoliaPublicApiKeyCallback()
+    {
+        printf(
+            '<input class="regular-text" type="text" name="algolia_index[public_api_key]" id="public_api_key" value="%s">',
+            isset($this->algolia_index_options['public_api_key']) ? esc_attr($this->algolia_index_options['public_api_key']) : ''
         );
     }
 

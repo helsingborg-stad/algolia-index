@@ -30,6 +30,19 @@ class Options
         return self::getOption()['api_key'];
     }
 
+    /**
+     * Get the api key
+     *
+     * @return string $apiKey
+     */
+    public static function publicApiKey()
+    {
+        if (defined('ALGOLIAINDEX__PUBLIC_API_KEY') && !empty(ALGOLIAINDEX__PUBLIC_API_KEY)) {
+            return ALGOLIAINDEX__PUBLIC_API_KEY;
+        }
+        return self::getOption()['public_api_key'];
+    }
+
      /**
      * Get or automatically create a index name, if not set by the developer.
      *
