@@ -21,6 +21,7 @@ Manages algolia index (with ms-support and mixed indexes). This is intended to b
 - define('ALGOLIAINDEX_APPLICATION_ID', 'ALGOLIAAPPID'); - REQUIRED
 - define('ALGOLIAINDEX_API_KEY', 'ALGOLIAAPIKEY'); - REQUIRED
 - define('ALGOLIAINDEX_INDEX_NAME', 'INDEX'); - OPTIONAL
+- define('ALGOLIAINDEX_PUBLIC_API_KEY', 'INDEX'); - OPTIONAL, Required by js searchpage addon
 
 ## Filters
 

@@ -37,8 +37,8 @@ class Options
      */
     public static function publicApiKey()
     {
-        if (defined('ALGOLIAINDEX__PUBLIC_API_KEY') && !empty(ALGOLIAINDEX__PUBLIC_API_KEY)) {
-            return ALGOLIAINDEX__PUBLIC_API_KEY;
+        if (defined('ALGOLIAINDEX_PUBLIC_API_KEY') && !empty(ALGOLIAINDEX_PUBLIC_API_KEY)) {
+            return ALGOLIAINDEX_PUBLIC_API_KEY;
         }
         return self::getOption()['public_api_key'];
     }

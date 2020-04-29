@@ -152,7 +152,7 @@ class Settings
           'public_api_key',
           'Public API Key
           <small style="display:block; font-weight: normal;">
-            May be overridden by ALGOLIAINDEX_API_KEY constant
+            May be overridden by ALGOLIAINDEX_PUBLIC_API_KEY constant
           </small>',
           array( $this, 'algoliaPublicApiKeyCallback' ),
           'algolia-index-admin',
