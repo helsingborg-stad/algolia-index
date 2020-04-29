@@ -39,6 +39,7 @@ Manages algolia index (with ms-support and mixed indexes). This is intended to b
 
 ## Actions
 - AlgoliaIndex/IndexPostId: Trigger reindex on a post id. 
+- AlgoliaIndex/SendSettings: Send settings. 
 
 ## WP CLI
 

@@ -142,7 +142,7 @@ class Index
         }
 
         //Do not index checkbox
-        if(get_post_meta($post->ID, 'exclude_from_search', true)) {
+        if(get_post_meta($post, 'exclude_from_search', true)) {
             return false;
         }
 

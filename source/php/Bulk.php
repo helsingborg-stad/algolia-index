@@ -14,6 +14,34 @@ class Bulk
     {
         //Build command
         \WP_CLI::add_command($this->prefix . 'build', array($this, 'build')); //Will not clear index
+        \WP_CLI::add_command($this->prefix . 'networkbuild', array($this, 'networkbuild')); //Will not clear index
+    }
+
+    /**
+     * Build index for whole network
+     *
+     * @param array $args
+     * @param array $assocArgs
+     * @return void
+     */
+    public function networkbuild($args, $assocArgs)
+    {
+        if(is_multisite()) {
+
+            \WP_CLI::log("Building network...");
+
+            $sites = get_sites(); 
+
+            foreach($sites as $site){
+                switch_to_blog($site->blog_id);
+                $this->build($args, $assocArgs); 
+                restore_current_blog();
+            }
+
+            return true;
+        }
+
+        \WP_CLI::error("No network detected, please use command build.");
     }
 
     /**
@@ -25,6 +53,12 @@ class Bulk
      */
     public function build($args, $assocArgs)
     {
+
+        //Send settings
+        if (isset($assocArgs['settings']) && $assocArgs['settings'] == "true") {
+            \WP_CLI::log("Sending settings...");
+            do_action('AlgoliaIndex/SendSettings', false);
+        }
 
         // Clear index if flag is true
         if (isset($assocArgs['clearindex']) && $assocArgs['clearindex'] == "true") {
