@@ -42,7 +42,7 @@ class Index
      */
     public function delete($postId, $isSplitRecord = false)
     {
-      
+
         if ($isSplitRecord && is_numeric($isSplitRecord)) {
           //Declarations
             $ids  = [];
@@ -57,7 +57,7 @@ class Index
           //Delete split records
             return Instance::getIndex()->deleteObjects($ids);
         }
-      
+
       //Delete normal records
         return Instance::getIndex()->deleteObject(Id::getId($postId));
     }
@@ -73,9 +73,9 @@ class Index
 
         //Delete if checked
         if(isset($_POST['exclude-from-search']) && $_POST['exclude-from-search'] == "true") {
-            return self::delete($postId); 
+            return self::delete($postId);
         }
-        
+
         //Check if is indexable post
         if (!self::shouldIndex($postId)) {
             return;
@@ -93,7 +93,15 @@ class Index
 
         //Get post data
         $post = self::getPost($postId);
-        
+
+        //Sanitize
+        array_walk_recursive(
+            $post,
+            function (&$entry) {
+                $entry = htmlentities($entry);
+            }
+        );
+
         //Index post
         if (self::recordToLarge($post)) {
             $splitRecord = self::splitRecord($post);
@@ -162,7 +170,7 @@ class Index
      */
     private static function hasChanged($postId)
     {
-        
+
         //Make search
         $response = (object) Instance::getIndex()->getObjects([Id::getId($postId)]);
 
@@ -201,7 +209,7 @@ class Index
      */
     private static function streamlineRecord($record)
     {
-        
+
       //List of fields to compare
         $comparables = apply_filters('AlgoliaIndex/Compare', [
         'ID',
@@ -246,8 +254,8 @@ class Index
               'uuid' => Id::getId($postId),
               'ID' => $post->ID,
               'post_title' => apply_filters('the_title', $post->post_title),
-              'post_excerpt' => mb_convert_encoding(get_the_excerpt($post), 'UTF-8', 'UTF-8'),
-              'content' => mb_convert_encoding(strip_tags(apply_filters('the_content', $post->post_content)), 'UTF-8', 'UTF-8'),
+              'post_excerpt' => strip_tags(get_the_excerpt($post)),
+              'content' => strip_tags(apply_filters('the_content', $post->post_content)),
               'permalink' => get_permalink($post->ID),
               'post_date' => strtotime($post->post_date),
               'post_date_formatted' => date(get_option('date_format'), strtotime($post->post_date)),
@@ -315,7 +323,7 @@ class Index
             self::$partialObjectDistinctKey => $record['uuid'],
             self::$partialObjectTotalAmount => count($contentChunks)
             ]);
-        
+
             $result[$chunkKey]['uuid'] = self::createChunkId($record['uuid'], $chunkKey);
         }
 
@@ -348,7 +356,7 @@ class Index
      */
     private static function isSplitRecord($postId)
     {
-      
+
         $response = (object) Instance::getIndex()->getObjects([Id::getId($postId)]);
 
         if (!is_null($response->results[0]) && array_key_exists(self::$partialObjectDistinctKey, $response->results[0])) {
