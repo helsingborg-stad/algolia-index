@@ -66,7 +66,7 @@ class Bulk
             Instance::getIndex()->clearObjects();
         }
 
-        \WP_CLI::log("Starting index build...");
+        \WP_CLI::log("Starting index build for site " . get_option('home'));
 
         $postTypes = Indexable::postTypes();
 
