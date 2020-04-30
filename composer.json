@@ -1,6 +1,7 @@
 {
     "name": "helsingborg-stad/algolia-index",
     "description": "Index wordpress site content to algolia.",
+    "type": "wordpress-plugin",
     "license": "MIT",
     "authors": [
         {
