@@ -43,6 +43,11 @@ Manages algolia index (with ms-support and mixed indexes). This is intended to b
 
 ## WP CLI
 
-- wp algolia-index build: Index all pages/posts on site. To clear index* before build, add flag --clearindex=true. 
+- wp algolia-index build: Index all pages/posts on site. 
+- wp algolia-index networkbuild: Index all pages/posts on networksites.
+
+### WP CLI Arguments
+- To clear index* before build, add flag --clearindex=true. 
+- To send required search configuration before build, add flag --settings=true.
 
 * This action is not fully compatible with multiple sites in one shared index! Sites that share the same index will be cleared but not reindexed.
