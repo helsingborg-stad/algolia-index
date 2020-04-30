@@ -78,7 +78,7 @@ class Options
     {
         return array_merge(
             array_flip(['application_id', 'api_key', 'index_name']),
-            array_filter((array) get_option('algolia_index')),
+            array_filter((array) get_option('algolia_index'))
         );
     }
 }
