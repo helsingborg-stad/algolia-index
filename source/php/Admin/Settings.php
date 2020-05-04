@@ -26,7 +26,7 @@ class Settings
    *
    * @return void
    */
-    public function sendAlgoliaSettings($integrityCheck = false)
+    public function sendAlgoliaSettings($integrityCheck = true)
     {
 
       //Limit to on submit settings form.
