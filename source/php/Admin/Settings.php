@@ -18,7 +18,7 @@ class Settings
     
     //Algolia settings
       add_action('admin_init', array($this, 'sendAlgoliaSettings'));
-      add_action('AlgoliaIndex/SendSettings', array($this, 'sendAlgoliaSettings'), 1);
+      add_action('AlgoliaIndex/SendSettings', array($this, 'sendAlgoliaSettings'));
     }
   
   /**
@@ -26,14 +26,17 @@ class Settings
    *
    * @return void
    */
-    public function sendAlgoliaSettings($integrityCheck = true)
+    public function sendAlgoliaSettings()
     {
+      global $wp_current_filter;
 
       //Limit to on submit settings form.
-        if ($integrityCheck && !isset($_GET['sendAlgoliaSettings'])) {
-          return;
+      if(in_array('admin_init', $wp_current_filter)) {
+        if(!isset($_GET['sendAlgoliaSettings'])) {
+          return; 
         }
-  
+      }
+
       // Define searchable attributes
         $searchableAttributes = apply_filters('AlgoliaIndex/SearchableAttributes', [
           'post_title',

@@ -29,7 +29,7 @@ class Bulk
         //Send settings
         if (isset($assocArgs['settings']) && $assocArgs['settings'] == "true") {
             \WP_CLI::log("Sending settings...");
-            do_action('AlgoliaIndex/SendSettings', false);
+            do_action('AlgoliaIndex/SendSettings');
         }
 
         // Clear index if flag is true
