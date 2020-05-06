@@ -36,7 +36,6 @@ class Post
       if (is_object($post) && isset($post->ID)) {
         $checked = checked(true, get_post_meta($post->ID, 'exclude_from_search', true), false);
         echo '
-
           <style scoped="scoped">
             .misc-pub-index:before {
               content: "\f179";
@@ -74,9 +73,11 @@ class Post
     public function saveExcludeFromSearch($postId)
     {
         if(isset($_POST['exclude-from-search']) && $_POST['exclude-from-search'] === 'false') {
-            delete_post_meta($postId, 'exclude_from_search');
-            return;
+          delete_post_meta($postId, 'exclude_from_search');
+          return true;
+        } elseif(isset($_POST['exclude-from-search']) && $_POST['exclude-from-search'] === 'true') {
+          update_post_meta($postId, 'exclude_from_search', true);
+          return false;
         }
-        update_post_meta($postId, 'exclude_from_search', true);
     }
 }
