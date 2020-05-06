@@ -65,10 +65,10 @@ class Post
     }
 
     /**
-     * Undocumented function
+     * Exclude from search toggle option
      *
-     * @param [type] $postId
-     * @return void
+     * @param int $postId
+     * @return bool
      */
     public function saveExcludeFromSearch($postId)
     {
