@@ -19,34 +19,30 @@ class Search
      */
     public function doAlgoliaQuery($query)
     {
+
         if (!is_admin() && $query->is_main_query() && $query->is_search && self::isSearchPage()) {
 
-          //Allow for queryless searches (backend filetering by taxonomy etc)
-            if(isset($query->query['s']) && !empty($query->query['s'])) {
+          //Check if backend search should run or not
+            if (self::backendSearchActive()) {
 
-              //Check if backend search should run or not
-                if (self::backendSearchActive()) {
+                $query->query_vars['post__in'] = self::getPostIdArray(
+                    Instance::getIndex()->search(
+                        $query->query['s']
+                    )['hits']
+                );
 
-                    $query->query_vars['post__in'] = self::getPostIdArray(
-                        Instance::getIndex()->search(
-                            $query->query['s']
-                        )['hits']
-                    );
+              //Disable local search
+                $query->query_vars['s'] = false;
 
-                  //Disable local search
-                    $query->query_vars['s'] = false;
+              //Order by respomse order algolia
+                $query->set('orderby', 'post__in');
 
-                  //Order by respomse order algolia
-                    $query->set('orderby', 'post__in');
+            }
 
-                }
-
-              //Query (locally) for a post that dosen't exist, if empty response from algolia
-                if (!self::backendSearchActive() || empty($query->query_vars['post__in'])) {
-                    $query->query_vars['post__in'] = PHP_INT_MAX; //Fake post id
-                    $query->set('posts_per_page', 1); //Limit to 1 result
-                }
-                
+          //Query (locally) for a post that dosen't exist, if empty response from algolia
+            if (!self::backendSearchActive()) {
+                $query->query_vars['post__in'] = PHP_INT_MAX; //Fake post id
+                $query->set('posts_per_page', 1); //Limit to 1 result
             }
 
         }
@@ -76,7 +72,10 @@ class Search
      */
     private static function isSearchPage()
     {
-        return is_search();
+        if (trim(strtok($_SERVER["REQUEST_URI"], '?'), "/") == "" && is_search()) {
+            return true;
+        }
+        return false;
     }
 
 
