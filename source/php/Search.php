@@ -21,29 +21,36 @@ class Search
     {
         if (!is_admin() && $query->is_main_query() && $query->is_search && self::isSearchPage()) {
 
-          //Check if backend search should run or not
-            if (self::backendSearchActive()) {
+          //Allow for queryless searches (backend filetering by taxonomy etc)
+            if(isset($query->query['s']) && !empty($query->query['s'])) {
 
-                $query->query_vars['post__in'] = self::getPostIdArray(
-                    Instance::getIndex()->search(
-                        $query->query['s']
-                    )['hits']
-                );
+              //Check if backend search should run or not
+                if (self::backendSearchActive()) {
 
-              //Disable local search
-                $query->query_vars['s'] = false;
+                    $query->query_vars['post__in'] = self::getPostIdArray(
+                        Instance::getIndex()->search(
+                            $query->query['s']
+                        )['hits']
+                    );
 
-              //Order by respomse order algolia
-                $query->set('orderby', 'post__in');
+                  //Disable local search
+                    $query->query_vars['s'] = false;
 
+                  //Order by respomse order algolia
+                    $query->set('orderby', 'post__in');
+
+                }
+
+              //Query (locally) for a post that dosen't exist, if empty response from algolia
+                if (!self::backendSearchActive() || empty($query->query_vars['post__in'])) {
+                    $query->query_vars['post__in'] = PHP_INT_MAX; //Fake post id
+                    $query->set('posts_per_page', 1); //Limit to 1 result
+                }
+                
             }
 
-          //Query (locally) for a post that dosen't exist, if empty response from algolia
-            if (!self::backendSearchActive() || empty($query->query_vars['post__in'])) {
-                $query->query_vars['post__in'] = PHP_INT_MAX; //Fake post id
-                $query->set('posts_per_page', 1); //Limit to 1 result
-            }
         }
+
     }
 
     /**
