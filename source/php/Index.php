@@ -98,7 +98,7 @@ class Index
         array_walk_recursive(
             $post,
             function (&$entry) {
-                $entry = htmlentities($entry);
+                $entry = html_entity_decode(htmlentities($entry));
             }
         );
 
