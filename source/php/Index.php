@@ -265,6 +265,7 @@ class Index
               'categories' => $categories,
               'algolia_timestamp' => current_time("Y-m-d H:i:s"),
               'post_type' => get_post_type($postId),
+              'post_type_name' => get_post_type_labels(get_post_type_object(get_post_type($postId)))->name
             );
 
             //Site
