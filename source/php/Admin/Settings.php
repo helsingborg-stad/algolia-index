@@ -65,6 +65,7 @@ class Settings
           'attributeForDistinct'  => 'partial_object_distinct_key',
           'distinct'              => true,
           'hitsPerPage'           => apply_filters('AlgoliaIndex/HitsPerPage', 15),
+          'paginationLimitedTo'   => apply_filters('AlgoliaIndex/PaginationLimitedTo', 200),
           'attributesToSnippet'   => $attributesToSnippet,
           'snippetEllipsisText'   => apply_filters('AlgoliaIndex/SnippetEllipsisText', "..."),
           'attributesForFaceting' => $attributesForFaceting,
