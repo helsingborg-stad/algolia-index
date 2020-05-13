@@ -277,6 +277,13 @@ class Index
                 $result['blog_id'] = get_current_blog_id();
             }
 
+            //Remove multiple spaces
+            foreach($result as $key => $field) {
+                if(in_array($key, array('post_title', 'post_excerpt', 'content'))) {
+                    $result[$key] = preg_replace('/\s+/', ' ', $field);
+                }
+            }
+
             return apply_filters('AlgoliaIndex/Record', $result, $postId);
         }
 
