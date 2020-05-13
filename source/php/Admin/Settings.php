@@ -69,6 +69,7 @@ class Settings
           'attributesToSnippet'   => $attributesToSnippet,
           'snippetEllipsisText'   => apply_filters('AlgoliaIndex/SnippetEllipsisText', "..."),
           'attributesForFaceting' => $attributesForFaceting,
+          'indexLanguages'        => !empty(get_bloginfo('language')) ? [substr(get_bloginfo('language'), 0, 2)] : []
         ]);
     }
     
