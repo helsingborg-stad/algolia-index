@@ -61,15 +61,16 @@ class Settings
 
       //Send settings
         Instance::getIndex()->setSettings([
-          'searchableAttributes'  => $searchableAttributes,
-          'attributeForDistinct'  => 'partial_object_distinct_key',
-          'distinct'              => true,
-          'hitsPerPage'           => apply_filters('AlgoliaIndex/HitsPerPage', 15),
-          'paginationLimitedTo'   => apply_filters('AlgoliaIndex/PaginationLimitedTo', 200),
-          'attributesToSnippet'   => $attributesToSnippet,
-          'snippetEllipsisText'   => apply_filters('AlgoliaIndex/SnippetEllipsisText', "..."),
-          'attributesForFaceting' => $attributesForFaceting,
-          'indexLanguages'        => !empty(get_bloginfo('language')) ? [substr(get_bloginfo('language'), 0, 2)] : []
+          'searchableAttributes'    => $searchableAttributes,
+          'attributeForDistinct'    => 'partial_object_distinct_key',
+          'distinct'                => true,
+          'hitsPerPage'             => apply_filters('AlgoliaIndex/HitsPerPage', 15),
+          'paginationLimitedTo'     => apply_filters('AlgoliaIndex/PaginationLimitedTo', 200),
+          'attributesToSnippet'     => $attributesToSnippet,
+          'snippetEllipsisText'     => apply_filters('AlgoliaIndex/SnippetEllipsisText', "..."),
+          'attributesForFaceting'   => $attributesForFaceting,
+          'indexLanguages'          => !empty(get_bloginfo('language')) ? [substr(get_bloginfo('language'), 0, 2)] : [],
+          'removeWordsIfNoResults'  => 'allOptional'
         ]);
     }
     
