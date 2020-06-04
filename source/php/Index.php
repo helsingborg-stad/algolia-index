@@ -5,6 +5,7 @@ namespace AlgoliaIndex;
 use \AlgoliaIndex\Helper\Index as Instance;
 use \AlgoliaIndex\Helper\Id as Id;
 use \AlgoliaIndex\Helper\Indexable as Indexable;
+use \AlgoliaIndex\Helper\Log as Log;
 
 class Index
 {
@@ -44,18 +45,21 @@ class Index
     {
 
         if ($isSplitRecord && is_numeric($isSplitRecord)) {
+
           //Declarations
             $ids  = [];
-            $i    = 0;
 
           //Create all id's
-            while ($i == $isSplitRecord) {
-                $ids[] = self::createChunkId(Id::getId($postId), $i);
-                $i++;
+            for ($x = 0; $x <= $isSplitRecord; $x++) {
+                $ids[] = self::createChunkId(Id::getId($postId), $x); 
             }
 
           //Delete split records
-            return Instance::getIndex()->deleteObjects($ids);
+            if(!empty($ids)) {
+                return Instance::getIndex()->deleteObjects($ids);
+            } else {
+                Log::error('Could not create array of ids for deletion (splitrecord). Trying to delete single post.'); 
+            }
         }
 
       //Delete normal records
@@ -70,10 +74,13 @@ class Index
      */
     public function index($postId)
     {
-
         //Delete if checked
         if(isset($_POST['exclude-from-search']) && $_POST['exclude-from-search'] == "true") {
-            return self::delete($postId);
+            if ($isSplitRecord = self::isSplitRecord($postId)) {
+                self::delete($postId, $isSplitRecord);
+            } else {
+                self::delete($postId); 
+            }
         }
 
         //Check if is indexable post
@@ -94,13 +101,8 @@ class Index
         //Get post data
         $post = self::getPost($postId);
 
-        //Sanitize
-        array_walk_recursive(
-            $post,
-            function (&$entry) {
-                $entry = html_entity_decode(htmlentities($entry));
-            }
-        );
+        //Sanity check (convert data)
+        $post = _wp_json_sanity_check($post, 10);
 
         //Index post
         if (self::recordToLarge($post)) {
@@ -364,7 +366,6 @@ class Index
      */
     private static function isSplitRecord($postId)
     {
-
         $response = (object) Instance::getIndex()->getObjects([Id::getId($postId)]);
 
         if (!is_null($response->results[0]) && array_key_exists(self::$partialObjectDistinctKey, $response->results[0])) {
