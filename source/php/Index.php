@@ -105,11 +105,9 @@ class Index
         $post = _wp_json_sanity_check($post, 10);
 
         //Esape html entities
-        if (is_array($post) && !empty($post)) {
-          foreach($post as $key => $item) {
-            $post[$key] = htmlentities($item);
-          }
-        }
+        array_walk_recursive($post, function (&$value) {
+            $value = htmlentities($value);
+        });
 
         //Index post
         if (self::recordToLarge($post)) {
