@@ -51,14 +51,14 @@ class Index
 
           //Create all id's
             for ($x = 0; $x <= $isSplitRecord; $x++) {
-                $ids[] = self::createChunkId(Id::getId($postId), $x); 
+                $ids[] = self::createChunkId(Id::getId($postId), $x);
             }
 
           //Delete split records
             if(!empty($ids)) {
                 return Instance::getIndex()->deleteObjects($ids);
             } else {
-                Log::error('Could not create array of ids for deletion (splitrecord). Trying to delete single post.'); 
+                Log::error('Could not create array of ids for deletion (splitrecord). Trying to delete single post.');
             }
         }
 
@@ -79,7 +79,7 @@ class Index
             if ($isSplitRecord = self::isSplitRecord($postId)) {
                 self::delete($postId, $isSplitRecord);
             } else {
-                self::delete($postId); 
+                self::delete($postId);
             }
         }
 
@@ -103,6 +103,13 @@ class Index
 
         //Sanity check (convert data)
         $post = _wp_json_sanity_check($post, 10);
+
+        //Esape html entities
+        if (is_array($post) && !empty($post)) {
+          foreach($post as $key => $item) {
+            $post[$key] = htmlentities($item);
+          }
+        }
 
         //Index post
         if (self::recordToLarge($post)) {
