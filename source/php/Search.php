@@ -41,7 +41,7 @@ class Search
 
           //Query (locally) for a post that dosen't exist, if empty response from algolia
             if (!self::backendSearchActive()) {
-                $query->query_vars['post__in'] = PHP_INT_MAX; //Fake post id
+                $query->query_vars['post__in'] = [PHP_INT_MAX]; //Fake post id
                 $query->set('posts_per_page', 1); //Limit to 1 result
             }
 
