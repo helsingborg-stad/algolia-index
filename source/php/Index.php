@@ -146,8 +146,8 @@ class Index
             return false;
         }
 
-        //Check if published post
-        if (get_post_status($post) !== 'publish') {
+        //Check if published post (or any other allowed value)
+        if(!in_array(get_post_status($post), Indexable::postStatuses())) {
             return false;
         }
 

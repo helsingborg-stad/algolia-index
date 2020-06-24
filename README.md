@@ -36,6 +36,7 @@ Manages algolia index (with ms-support and mixed indexes). This is intended to b
 - AlgoliaIndex/AttributesToSnippet: What attributes to snippet.
 - AlgoliaIndex/SnippetEllipsisText: Suffix for snippet.
 - AlgoliaIndex/BackendSearchActive: Send false to disable backend search.
+- AlgoliaIndex/IndexablePostStatuses: What post statuses to allow for index. 
 
 ## Actions
 - AlgoliaIndex/IndexPostId: Trigger reindex on a post id. 

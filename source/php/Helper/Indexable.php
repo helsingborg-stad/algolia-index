@@ -18,4 +18,11 @@ class Indexable
 
         return apply_filters('AlgoliaIndex/IndexablePostTypes', $postTypes);
     }
+
+
+    public static function postStatuses()
+    {
+        $postStatuses = ['publish'];
+        return apply_filters('AlgoliaIndex/IndexablePostStatuses', $postStatuses);
+    }
 }
