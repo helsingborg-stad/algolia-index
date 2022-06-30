@@ -9,9 +9,6 @@ class App
 
     public function __construct()
     {
-
-        var_dump(Options::isConfigured());
-
         //Warn for missing api-keys, end execution
         if (!Options::isConfigured()) {
             add_action('admin_notices', array($this, 'displayAdminNotice'));
