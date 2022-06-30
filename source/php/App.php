@@ -9,10 +9,8 @@ class App
 
     public function __construct()
     {
-        $isConfigured = !(bool) (empty(Options::applicationId()) || empty(Options::apiKey()));
-
         //Warn for missing api-keys, end execution
-        if (!$isConfigured) {
+        if (!Options::isConfigured()) {
             add_action('admin_notices', array($this, 'displayAdminNotice'));
 
             //Run plugin
@@ -21,11 +19,11 @@ class App
 
             //Admin pages
             new \AlgoliaIndex\Admin\Post();
+        }
 
-            //Cli api (bulk actions)
-            if (defined('WP_CLI') && WP_CLI == true) {
-                new \AlgoliaIndex\Bulk();
-            }
+        //Cli api (bulk actions)
+        if (defined('WP_CLI') && WP_CLI == true) {
+            new \AlgoliaIndex\Bulk();
         }
 
         //Config page

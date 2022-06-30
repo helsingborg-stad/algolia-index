@@ -29,7 +29,7 @@ class Settings
     public function sendAlgoliaSettings()
     {
 
-        if (!(bool) (empty(Options::applicationId()) || empty(Options::apiKey()))) {
+        if (!Options::isConfigured()) {
             return;
         }
 

@@ -5,6 +5,17 @@ namespace AlgoliaIndex\Helper;
 class Options
 {
     /**
+     * Checking if basic config is present
+     *
+     * @return bool
+     */
+
+    public static function isConfigured()
+    {
+        return !(bool) (empty(self::applicationId()) || empty(self::apiKey()));
+    }
+
+    /**
      * Get the app-id
      *
      * @return string $appId

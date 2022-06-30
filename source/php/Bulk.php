@@ -4,6 +4,7 @@ namespace AlgoliaIndex;
 
 use \AlgoliaIndex\Helper\Index as Instance;
 use \AlgoliaIndex\Helper\Indexable as Indexable;
+use \AlgoliaIndex\Helper\Options as Options;
 
 class Bulk
 {
@@ -25,6 +26,10 @@ class Bulk
      */
     public function build($args, $assocArgs)
     {
+        if (!Options::isConfigured()) {
+            \WP_CLI::log("Search must be configured before indexing, terminating...");
+            return;
+        }
 
         //Send settings
         if (isset($assocArgs['settings']) && $assocArgs['settings'] == "true") {
