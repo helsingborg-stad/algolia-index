@@ -12,32 +12,28 @@ class Settings
 
     public function __construct()
     {
-    //Local settings
-      add_action('admin_menu', array( $this, 'addPluginPage'));
-      add_action('admin_init', array( $this, 'pluginPageInit'));
-    
-    //Algolia settings
-      add_action('admin_init', array($this, 'sendAlgoliaSettings'));
-      add_action('AlgoliaIndex/SendSettings', array($this, 'sendAlgoliaSettings'));
+        //Local settings
+        add_action('admin_menu', array( $this, 'addPluginPage'));
+        add_action('admin_init', array( $this, 'pluginPageInit'));
+
+        //Algolia settings
+        add_action('update_option_algolia_index', array($this, 'sendAlgoliaSettings'));
+        add_action('AlgoliaIndex/SendSettings', array($this, 'sendAlgoliaSettings'));
     }
-  
-  /**
-   * Send searchable attributes.
-   *
-   * @return void
-   */
+
+    /**
+    * Send searchable attributes.
+    *
+    * @return void
+    */
     public function sendAlgoliaSettings()
     {
-      global $wp_current_filter;
 
-      //Limit to on submit settings form.
-      if(in_array('admin_init', $wp_current_filter)) {
-        if(!isset($_GET['sendAlgoliaSettings'])) {
-          return; 
+        if (!(bool) (empty(Options::applicationId()) || empty(Options::apiKey()))) {
+            return;
         }
-      }
 
-      // Define searchable attributes
+        // Define searchable attributes
         $searchableAttributes = apply_filters('AlgoliaIndex/SearchableAttributes', [
           'post_title',
           'post_excerpt',
@@ -47,19 +43,19 @@ class Settings
           'categories'
         ]);
 
-      //AttributesToSnippet
+        //AttributesToSnippet
         $attributesToSnippet = apply_filters('AlgoliaIndex/AttributesToSnippet', [
           'content:40',
           'permalink:15',
           'post_title:7'
         ]);
 
-      //Facetingattributes
+        //Facetingattributes
         $attributesForFaceting = apply_filters('AlgoliaIndex/AttributesToSnippet', [
           'searchable(origin_site)'
         ]);
 
-      //Send settings
+        //Send settings
         Instance::getIndex()->setSettings([
           'searchableAttributes'    => $searchableAttributes,
           'attributeForDistinct'    => 'partial_object_distinct_key',
@@ -73,28 +69,28 @@ class Settings
           'removeWordsIfNoResults'  => 'allOptional'
         ]);
     }
-    
-  /**
-   * Register the plugins page
-   *
-   * @return void
-   */
+
+    /**
+    * Register the plugins page
+    *
+    * @return void
+    */
     public function addPluginPage()
     {
-      add_options_page(
-          __("Algolia Index", 'algolia-index'),
-          __("Algolia Index", 'algolia-index'),
-          'manage_options',
-          'algolia-index',
-          array( $this, 'algoliaIndexCreateAdminPage' )
-      );
+        add_options_page(
+            __("Algolia Index", 'algolia-index'),
+            __("Algolia Index", 'algolia-index'),
+            'manage_options',
+            'algolia-index',
+            array( $this, 'algoliaIndexCreateAdminPage' )
+        );
     }
 
-  /**
-   * View
-   *
-   * @return void
-   */
+    /**
+    * View
+    *
+    * @return void
+    */
     public function algoliaIndexCreateAdminPage()
     {
       ?>
@@ -112,105 +108,105 @@ class Settings
       <?php
     }
 
-  /**
-   * Register settings
-   *
-   * @return void
-   */
+    /**
+    * Register settings
+    *
+    * @return void
+    */
     public function pluginPageInit()
     {
-      register_setting(
-          'algolia_index_option_group',
-          'algolia_index',
-          array($this, 'algoliaIndexSanitize')
-      );
-  
-      add_settings_section(
-          'algolia_index_setting_section',
-          'Settings',
-          array( $this, 'algoliaSettingsSectionCallback' ),
-          'algolia-index-admin'
-      );
+        register_setting(
+            'algolia_index_option_group',
+            'algolia_index',
+            array($this, 'algoliaIndexSanitize')
+        );
 
-      add_settings_field(
-          'application_id',
-          'Application ID
-          <small style="display:block; font-weight: normal;">
-            May be overridden by ALGOLIAINDEX_APPLICATION_ID constant
-          <small>',
-          array( $this, 'algoliaApplicationIdCallback' ),
-          'algolia-index-admin',
-          'algolia_index_setting_section'
-      );
+        add_settings_section(
+            'algolia_index_setting_section',
+            'Settings',
+            array( $this, 'algoliaSettingsSectionCallback' ),
+            'algolia-index-admin'
+        );
 
-      add_settings_field(
-          'api_key',
-          'API Key
-          <small style="display:block; font-weight: normal;">
-            May be overridden by ALGOLIAINDEX_API_KEY constant
-          </small>',
-          array( $this, 'algoliaApiKeyCallback' ),
-          'algolia-index-admin',
-          'algolia_index_setting_section'
-      );
+        add_settings_field(
+            'application_id',
+            'Application ID
+            <small style="display:block; font-weight: normal;">
+              May be overridden by ALGOLIAINDEX_APPLICATION_ID constant
+            <small>',
+            array( $this, 'algoliaApplicationIdCallback' ),
+            'algolia-index-admin',
+            'algolia_index_setting_section'
+        );
 
-      add_settings_field(
-        'public_api_key',
-        'Public API Key
-        <small style="display:block; font-weight: normal;">
-          May be overridden by ALGOLIAINDEX_PUBLIC_API_KEY constant
-        </small>',
-        array( $this, 'algoliaPublicApiKeyCallback' ),
-        'algolia-index-admin',
-        'algolia_index_setting_section'
-      );
+        add_settings_field(
+            'api_key',
+            'API Key
+            <small style="display:block; font-weight: normal;">
+              May be overridden by ALGOLIAINDEX_API_KEY constant
+            </small>',
+            array( $this, 'algoliaApiKeyCallback' ),
+            'algolia-index-admin',
+            'algolia_index_setting_section'
+        );
 
-      add_settings_field(
-          'index_name',
-          'Index name
-          <small style="display:block; font-weight: normal;">
-            May be overridden by ALGOLIAINDEX_INDEX_NAME constant. Leave blank to create one for you.
-          </small>',
-          array( $this, 'algoliaIndexNameCallback' ),
-          'algolia-index-admin',
-          'algolia_index_setting_section'
-      );
-  
-      add_settings_section(
-          'algolia_index_summary_section',
-          'Summary',
-          array( $this, 'algoliaSettingsSummaryCallback' ),
-          'algolia-index-admin'
-      );
+        add_settings_field(
+            'public_api_key',
+            'Public API Key
+            <small style="display:block; font-weight: normal;">
+              May be overridden by ALGOLIAINDEX_PUBLIC_API_KEY constant
+            </small>',
+            array( $this, 'algoliaPublicApiKeyCallback' ),
+            'algolia-index-admin',
+            'algolia_index_setting_section'
+        );
+
+        add_settings_field(
+            'index_name',
+            'Index name
+            <small style="display:block; font-weight: normal;">
+              May be overridden by ALGOLIAINDEX_INDEX_NAME constant. Leave blank to create one for you.
+            </small>',
+            array( $this, 'algoliaIndexNameCallback' ),
+            'algolia-index-admin',
+            'algolia_index_setting_section'
+        );
+
+        add_settings_section(
+            'algolia_index_summary_section',
+            'Summary',
+            array( $this, 'algoliaSettingsSummaryCallback' ),
+            'algolia-index-admin'
+        );
     }
 
-  /**
-   * Load option
-   *
-   * @return void
-   */
+    /**
+    * Load option
+    *
+    * @return void
+    */
     public function algoliaSettingsSectionCallback()
     {
-      $this->algolia_index_options = get_option('algolia_index');
+        $this->algolia_index_options = get_option('algolia_index');
     }
 
-  /**
-   * Display summary
-   *
-   * @return void
-   */
+    /**
+    * Display summary
+    *
+    * @return void
+    */
     public function algoliaSettingsSummaryCallback()
     {
-      echo '<p>The following data is used by the algoia integration.</p>';
-      echo '<table>';
-      echo '
-        <tr><td style="min-width: 100px;">
-          <strong>Application ID: </strong>
-        </td><td>' . Options::applicationId() .'</td></tr>';
-      echo '<tr><td><strong>API Key: </strong></td><td>' . Options::apiKey() .'</td></tr>';
-      echo '<tr><td><strong>Public API Key: </strong></td><td>' . Options::PublicApiKey() .'</td></tr>';
-      echo '<tr><td><strong>Index Name: </strong></td><td>' . Options::indexName() .'</td></tr>';
-      echo '</table>';
+        echo '<p>The following data is used by the algoia integration.</p>';
+        echo '<table>';
+        echo '
+          <tr><td style="min-width: 100px;">
+            <strong>Application ID: </strong>
+          </td><td>' . Options::applicationId() .'</td></tr>';
+        echo '<tr><td><strong>API Key: </strong></td><td>' . Options::apiKey() .'</td></tr>';
+        echo '<tr><td><strong>Public API Key: </strong></td><td>' . Options::PublicApiKey() .'</td></tr>';
+        echo '<tr><td><strong>Index Name: </strong></td><td>' . Options::indexName() .'</td></tr>';
+        echo '</table>';
     }
 
   /**
@@ -222,7 +218,7 @@ class Settings
     public function algoliaIndexSanitize($input)
     {
         $sanitary_values = array();
-    
+
         if (isset($input['application_id'])) {
             $sanitary_values['application_id'] = sanitize_text_field($input['application_id']);
         }
@@ -242,11 +238,11 @@ class Settings
         return $sanitary_values;
     }
 
-  /**
-   * Print field, with data.
-   *
-   * @return void
-   */
+    /**
+    * Print field, with data.
+    *
+    * @return void
+    */
     public function algoliaApplicationIdCallback()
     {
         printf(
@@ -254,12 +250,12 @@ class Settings
             isset($this->algolia_index_options['application_id']) ? esc_attr($this->algolia_index_options['application_id']) : ''
         );
     }
-  
-  /**
-   * Print field, with data.
-   *
-   * @return void
-   */
+
+    /**
+    * Print field, with data.
+    *
+    * @return void
+    */
     public function algoliaApiKeyCallback()
     {
         printf(
@@ -268,11 +264,11 @@ class Settings
         );
     }
 
-  /**
-   * Print field, with data.
-   *
-   * @return void
-   */
+    /**
+    * Print field, with data.
+    *
+    * @return void
+    */
     public function algoliaPublicApiKeyCallback()
     {
         printf(
@@ -281,11 +277,11 @@ class Settings
         );
     }
 
-  /**
-   * Print field, with data.
-   *
-   * @return void
-   */
+    /**
+    * Print field, with data.
+    *
+    * @return void
+    */
     public function algoliaIndexNameCallback()
     {
         printf(
