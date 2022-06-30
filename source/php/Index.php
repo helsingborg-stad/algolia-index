@@ -83,6 +83,8 @@ class Index
             }
         }
 
+        var_dump("test");
+
         //Check if is indexable post
         if (!self::shouldIndex($postId)) {
             return;

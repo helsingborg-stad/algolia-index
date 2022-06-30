@@ -9,25 +9,28 @@ class App
 
     public function __construct()
     {
+
+        var_dump(Options::isConfigured());
+
         //Warn for missing api-keys, end execution
         if (!Options::isConfigured()) {
             add_action('admin_notices', array($this, 'displayAdminNotice'));
-
-            //Run plugin
-            new \AlgoliaIndex\Index();
-            new \AlgoliaIndex\Search();
-
-            //Admin pages
-            new \AlgoliaIndex\Admin\Post();
         }
+
+        //Config page
+        new \AlgoliaIndex\Admin\Settings();
+
+        //Run plugin
+        new \AlgoliaIndex\Index();
+        new \AlgoliaIndex\Search();
+
+        //Admin pages
+        new \AlgoliaIndex\Admin\Post();
 
         //Cli api (bulk actions)
         if (defined('WP_CLI') && WP_CLI == true) {
             new \AlgoliaIndex\Bulk();
         }
-
-        //Config page
-        new \AlgoliaIndex\Admin\Settings();
     }
 
     /**
