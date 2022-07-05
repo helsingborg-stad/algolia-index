@@ -267,7 +267,7 @@ class Index
               'post_date' => strtotime($post->post_date),
               'post_date_formatted' => date(get_option('date_format'), strtotime($post->post_date)),
               'post_modified' => strtotime($post->post_modified),
-              'thumbnail' => get_the_post_thumbnail_url($post) ? get_the_post_thumbnail_url($post, 'thumbnail') : '',
+              'thumbnail' => get_the_post_thumbnail_url($post) ? get_the_post_thumbnail_url($post, 'medium') : '',
               'tags' => $tags,
               'categories' => $categories,
               'algolia_timestamp' => current_time("Y-m-d H:i:s"),
