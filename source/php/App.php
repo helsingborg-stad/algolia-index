@@ -17,7 +17,7 @@ class App
         //Config page
         new \AlgoliaIndex\Admin\Settings();
 
-        if(Options::publicApiKey() && Options::applicationId() && Options::indexName()) {
+        if(Options::isConfigured()) {
             //Run plugin
             new \AlgoliaIndex\Index();
             new \AlgoliaIndex\Search();
