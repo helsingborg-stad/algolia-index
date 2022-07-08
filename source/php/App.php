@@ -17,9 +17,11 @@ class App
         //Config page
         new \AlgoliaIndex\Admin\Settings();
 
-        //Run plugin
-        new \AlgoliaIndex\Index();
-        new \AlgoliaIndex\Search();
+        if(Options::publicApiKey() && Options::applicationId() && Options::indexName()) {
+            //Run plugin
+            new \AlgoliaIndex\Index();
+            new \AlgoliaIndex\Search();
+        }
 
         //Admin pages
         new \AlgoliaIndex\Admin\Post();
