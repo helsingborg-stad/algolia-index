@@ -75,8 +75,10 @@ class Index
     public function index($postId)
     {
         
-        //Delete if checked
-         if(isset($_POST['exclude-from-search']) && $_POST['exclude-from-search'] == "true" || get_post_status($postId) !== 'publish') {
+        //Check if post should be removed
+        $shouldPostBeRemoved = [isset($_POST['exclude-from-search']) && $_POST['exclude-from-search'] == "true", get_post_status($postId) !== 'publish'];
+        
+         if(in_array(true, $shouldPostBeRemoved)) {
             if ($isSplitRecord = self::isSplitRecord($postId)) {
                 self::delete($postId, $isSplitRecord);
             } else {
