@@ -83,6 +83,14 @@ class Index
             }
         }
 
+         if(get_post_status($postId) != 'publish') {
+            if ($isSplitRecord = self::isSplitRecord($postId)) {
+                self::delete($postId, $isSplitRecord);
+            } else {
+                self::delete($postId);
+            }
+        }
+ 
         //Check if is indexable post
         if (!self::shouldIndex($postId)) {
             return;
