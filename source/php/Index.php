@@ -74,19 +74,22 @@ class Index
      */
     public function index($postId)
     {
-        //Delete if checked
-        if(isset($_POST['exclude-from-search']) && $_POST['exclude-from-search'] == "true") {
+        
+        //Check if post should be removed
+        $shouldPostBeRemoved = [isset($_POST['exclude-from-search']) && $_POST['exclude-from-search'] == "true", get_post_status($postId) !== 'publish'];
+        
+         if(in_array(true, $shouldPostBeRemoved)) {
             if ($isSplitRecord = self::isSplitRecord($postId)) {
                 self::delete($postId, $isSplitRecord);
             } else {
                 self::delete($postId);
             }
-        }
-
+        } 
+        
         //Check if is indexable post
         if (!self::shouldIndex($postId)) {
             return;
-        }
+        } 
 
         //Delete split record (no check if has changed)
         if ($isSplitRecord = self::isSplitRecord($postId)) {
