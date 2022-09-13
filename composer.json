@@ -21,8 +21,8 @@
         }
     ],
     "require": {
-        "algolia/algoliasearch-client-php": "2.8.0",
-        "google/apiclient": "2.7.2",
+        "algolia/algoliasearch-client-php": "^3.3.1",
+        "google/apiclient": "^2.12.6",
         "guzzlehttp/guzzle": "7.5.0"
     },
     "extra": {
