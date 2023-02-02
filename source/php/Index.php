@@ -264,7 +264,7 @@ class Index
               'uuid' => Id::getId($postId),
               'ID' => $post->ID,
               'post_title' => apply_filters('the_title', $post->post_title),
-              'post_excerpt' => self::handleExcerpt($post),
+              'post_excerpt' => self::getTheExcerpt($post),
               'content' => strip_tags(apply_filters('the_content', $post->post_content)),
               'permalink' => get_permalink($post->ID),
               'post_date' => strtotime($post->post_date),
