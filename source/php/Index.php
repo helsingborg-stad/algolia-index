@@ -307,7 +307,7 @@ class Index
             return strip_tags($excerpt);
         } 
 
-        $excerpt = wp_trim_excerpt($post->post_content, '<!--more-->');
+        return wp_trim_excerpt($post->post_content, '<!--more-->');
 
         
     }
