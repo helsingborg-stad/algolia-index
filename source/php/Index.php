@@ -310,8 +310,6 @@ class Index
         $excerpt = wp_trim_excerpt($post->post_content, '<!--more-->');
 
         return $excerpt;
-        
-        }
     }
 
     /**
