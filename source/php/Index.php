@@ -264,7 +264,7 @@ class Index
               'uuid' => Id::getId($postId),
               'ID' => $post->ID,
               'post_title' => apply_filters('the_title', $post->post_title),
-              'post_excerpt' => strip_tags(get_the_excerpt($post)),
+              'post_excerpt' => self::handleExcerpt($post),
               'content' => strip_tags(apply_filters('the_content', $post->post_content)),
               'permalink' => get_permalink($post->ID),
               'post_date' => strtotime($post->post_date),
@@ -298,6 +298,20 @@ class Index
         }
 
         return null;
+    }
+
+    public function handleExcerpt($post) {
+        $excerpt = get_the_excerpt($post);
+
+        if (!empty($excerpt)) {
+            return strip_tags($excerpt);
+        } 
+
+        $excerpt = wp_trim_excerpt($post->post_content, '<!--more-->');
+
+        return $excerpt;
+        
+        }
     }
 
     /**
