@@ -300,7 +300,7 @@ class Index
         return null;
     }
 
-    public function handleExcerpt($post) {
+    public function getTheExcerpt($post) {
         $excerpt = get_the_excerpt($post);
 
         if (!empty($excerpt)) {
