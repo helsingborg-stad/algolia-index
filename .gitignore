@@ -47,6 +47,9 @@ Thumbs.db
 dist/temp
 dist/.temp
 
+# ignore vendor folder
+/vendor
+
 # -------------------------
 # BEGIN Whitelisted Files
 # -------------------------

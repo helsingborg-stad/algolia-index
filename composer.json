@@ -32,5 +32,8 @@
             "wp-content/plugins/{$name}": ["type:wordpress-plugin"],
             "wp-content/themes/{$name}": ["type:wordpress-theme"]
         }
+    },
+    "require-dev": {
+        "phpunit/phpunit": "^9.6"
     }
 }

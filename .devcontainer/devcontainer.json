@@ -11,7 +11,8 @@
 
 	// For use with PHP or Apache (e.g.php -S localhost:8080 or apache2ctl start)
 	"forwardPorts": [
-		8080
+		8080,
+		"4406:3306"
 	],
 	"remoteEnv": {
 		"XDEBUG_MODE": "off"
