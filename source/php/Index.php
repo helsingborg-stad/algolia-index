@@ -22,8 +22,13 @@ class Index
     /**
      * Constructor, runs code on wordpress hooks.
      */
-    public function __construct()
+    public function __construct($hookActions = true)
     {
+        //Test bailout
+        if($hookActions === false) {
+            return;
+        }
+
         //Add & update
         add_action('save_post', array($this, 'index'), self::$_priority);
 

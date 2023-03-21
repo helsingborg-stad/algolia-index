@@ -7,9 +7,9 @@ class IndexTest extends WP_UnitTestCase
 
   private $targetTestClass = null; 
 
-  public function __construct()
+  public function set_up()
   {
-    $this->targetTestClass = new Index();
+    $this->targetTestClass = new Index(false);
   }
 
   public function invokeMethod(&$object, $methodName, array $parameters = array())
