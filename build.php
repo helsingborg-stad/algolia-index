@@ -16,6 +16,7 @@ $removables = [
     '.git',
     '.gitignore',
     '.github',
+    '.devcontainer',
     'build.php',
     'composer.json',
     'composer.lock',
