@@ -60,4 +60,42 @@ class IndexTest extends WP_UnitTestCase
       $this->assertTrue($isIndexable);
   }
 
+  public function testThatASmallRecordIsentTooLarge() {
+    
+    // Given
+    $post = self::factory()->post->create_and_get([
+      "post_title" => "Test Post",
+      "post_content" => str_repeat("1", 5000)
+    ]);
+
+    // When
+    $recordTooLarge = $this->invokeMethod(
+      $this->targetTestClass,
+      'recordToLarge',
+      [$post]
+    );
+
+    // Then
+    $this->assertFalse($recordTooLarge);
+  }
+
+  public function testThatALargeRecordIsToLarge() {
+    
+    // Given
+    $post = self::factory()->post->create_and_get([
+      "post_title" => "Test Post",
+      "post_content" => str_repeat("1", 20000)
+    ]);
+
+    // When
+    $recordTooLarge = $this->invokeMethod(
+      $this->targetTestClass,
+      'recordToLarge',
+      [$post]
+    );
+
+    // Then
+    $this->assertTrue($recordTooLarge);
+  }
+
 }
