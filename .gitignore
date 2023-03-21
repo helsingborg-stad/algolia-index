@@ -50,6 +50,10 @@ dist/.temp
 # ignore vendor folder
 /vendor
 
+# ignore tests 
+.phpunit.result.cache
+.coverage
+
 # -------------------------
 # BEGIN Whitelisted Files
 # -------------------------
