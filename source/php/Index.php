@@ -347,9 +347,10 @@ class Index
         $contentSize    = mb_strlen($record['content'], '8bit');
         $additionalSize = mb_strlen(serialize(array_diff_key($record, array_flip(['content']))), '8bit');
         $numberOfChunks = (int) ceil($contentSize / (self::$_nearMaxLimitSize - $additionalSize));
+        $chunkSize      = (int) ceil($contentSize / $numberOfChunks); 
         $contentChunks = str_split(
             $record['content'], 
-            (int) ceil($contentSize/$numberOfChunks) ?? 1
+            (empty($chunkSize) ? 1 : $chunkSize)
         );
 
       //Create final object to be indexed
