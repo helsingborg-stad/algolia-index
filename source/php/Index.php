@@ -306,8 +306,19 @@ class Index
     }
 
     public function getTheExcerpt($post, int $numberOfWords = 55) {
+
+        $excerpt = get_the_excerpt($post); 
+
         if(empty($excerpt) || strlen($excerpt) > 10) {
-           $excerpt = $post->post_content; 
+           $excerpt = $post->post_content;  
+        }
+
+        $blocks = parse_blocks($excerpt); 
+        if(is_countable($blocks) && !empty($blocks)) {
+            $excerpt = ""; 
+            foreach($blocks as $block) {
+                $excerpt .= render_block($block) . " " . PHP_EOL; 
+            }
         }
 
         return wp_trim_words(

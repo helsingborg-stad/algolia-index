@@ -120,7 +120,6 @@ class IndexTest extends WP_UnitTestCase
     $this->assertnotEquals($truncatedExcerpt, $excerpt, "Truncated excerpt is equal to excerpt.");
   }
 
-
   public function testThatAExerptIsShortenedWhenNoExcerptDefined() { 
      
     // Given
@@ -141,4 +140,27 @@ class IndexTest extends WP_UnitTestCase
     // Then
     $this->assertnotEquals($truncatedExcerpt, $excerpt, "Truncated excerpt is equal to excerpt.");
   }
+
+  public function testThatABlockPostIsGeneratingAExcerpt() { 
+     
+    // Given
+    $post = self::factory()->post->create_and_get([
+      "post_title" => "Gutenberg Test Post",
+      "post_content" => '<!--wp:columns--><divclass="wp-block-columns"><!--wp:column--><divclass="wp-block-column"><!--wp:paragraph--><p>Column1</p><!--/wp:paragraph--></div><!--/wp:column--><!--wp:column--><divclass="wp-block-column"><!--wp:paragraph--><p>Column2</p><!--/wp:paragraph--></div><!--/wp:column--><!--wp:column--><divclass="wp-block-column"><!--wp:paragraph--><p>Column3</p><!--/wp:paragraph--></div><!--/wp:column--></div><!--/wp:columns-->'
+    ]);
+
+    // When
+    $truncatedExcerpt = $this->invokeMethod(
+      $this->targetTestClass,
+      'getTheExcerpt',
+      [$post]
+    );
+
+    // Then
+    $this->assertNotEmpty($truncatedExcerpt);
+  }
+
 }
+
+
+
