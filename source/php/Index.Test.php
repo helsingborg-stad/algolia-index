@@ -98,4 +98,47 @@ class IndexTest extends WP_UnitTestCase
     $this->assertTrue($recordTooLarge);
   }
 
+  public function testThatAExerptIsShortened() { 
+     
+    // Given
+    $excerpt = str_repeat("excerpt ", 100);
+    $postContent = str_repeat("excerpt content ", 1000) . "<!-- more -->" . str_repeat("excerpt content ", 10000); 
+    $post = self::factory()->post->create_and_get([
+      "post_title" => "Test Post",
+      "post_content" => $postContent,
+      "post_excerpt" => $excerpt
+    ]);
+
+    // When
+    $truncatedExcerpt = $this->invokeMethod(
+      $this->targetTestClass,
+      'getTheExcerpt',
+      [$post]
+    );
+
+    // Then
+    $this->assertnotEquals($truncatedExcerpt, $excerpt, "Truncated excerpt is equal to excerpt.");
+  }
+
+
+  public function testThatAExerptIsShortenedWhenNoExcerptDefined() { 
+     
+    // Given
+    $excerpt = str_repeat("excerpt ", 100);
+    $postContent = str_repeat("excerpt content ", 1000) . "<!-- more -->" . str_repeat("excerpt content ", 10000); 
+    $post = self::factory()->post->create_and_get([
+      "post_title" => "Test Post",
+      "post_content" => $postContent
+    ]);
+
+    // When
+    $truncatedExcerpt = $this->invokeMethod(
+      $this->targetTestClass,
+      'getTheExcerpt',
+      [$post]
+    );
+
+    // Then
+    $this->assertnotEquals($truncatedExcerpt, $excerpt, "Truncated excerpt is equal to excerpt.");
+  }
 }
