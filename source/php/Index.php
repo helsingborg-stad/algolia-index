@@ -349,7 +349,7 @@ class Index
         $numberOfChunks = (int) ceil($contentSize / (self::$_nearMaxLimitSize - $additionalSize));
         $contentChunks = str_split(
             $record['content'], 
-            (int) ceil($contentSize/$numberOfChunks)
+            (int) ceil($contentSize/$numberOfChunks) ?? 1
         );
 
       //Create final object to be indexed
