@@ -11,7 +11,7 @@ jobs:
       - uses: actions/checkout@v2
 
       - name: PHP CS Fixer
-        uses: StephaneBour/actions-php-cs-fixer@1.0
+        uses: StephaneBour/actions-php-cs-fixer@3
         with:
           # Fix php
           dir: 'source/'
