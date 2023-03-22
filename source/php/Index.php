@@ -22,8 +22,13 @@ class Index
     /**
      * Constructor, runs code on wordpress hooks.
      */
-    public function __construct()
+    public function __construct($hookActions = true)
     {
+        //Test bailout
+        if($hookActions === false) {
+            return;
+        }
+
         //Add & update
         add_action('save_post', array($this, 'index'), self::$_priority);
 
@@ -300,16 +305,14 @@ class Index
         return null;
     }
 
-    public function getTheExcerpt($post) {
-        $excerpt = get_the_excerpt($post);
+    public function getTheExcerpt($post, int $numberOfWords = 55) {
+        if(empty($excerpt) || strlen($excerpt) > 10) {
+           $excerpt = $post->post_content; 
+        }
 
-        if (!empty($excerpt)) {
-            return strip_tags($excerpt);
-        } 
-
-        return wp_trim_excerpt($post->post_content, '<!--more-->');
-
-        
+        return wp_trim_words(
+            strip_tags($excerpt)
+        , $numberOfWords, "...");
     }
 
     /**

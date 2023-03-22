@@ -47,6 +47,13 @@ Thumbs.db
 dist/temp
 dist/.temp
 
+# ignore vendor folder
+/vendor
+
+# ignore tests 
+.phpunit.result.cache
+.coverage
+
 # -------------------------
 # BEGIN Whitelisted Files
 # -------------------------
@@ -55,3 +62,4 @@ dist/.temp
 !.gitignore
 !.editorconfig
 !.github/
+!.devcontainer/
