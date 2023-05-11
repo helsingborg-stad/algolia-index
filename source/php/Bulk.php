@@ -48,15 +48,26 @@ class Bulk
         $postTypes = Indexable::postTypes();
 
         if (is_array($postTypes) && !empty($postTypes)) {
+
+            global $post;
+            $globalPost = $post;
+
             foreach ($postTypes as $postType) {
                 $posts = (array) $this->getPosts($postType);
                 if (is_array($posts) && !empty($posts)) {
-                    foreach ($posts as $post) {
-                        \WP_CLI::log("Indexing '" . $post->post_title . "' of posttype " . $postType);
-                        do_action('AlgoliaIndex/IndexPostId', $post->ID);
+                    foreach ($posts as $postToIndex) {
+
+                        // Set global post object to current post to enable using it in code being indexed.
+                        $post = $postToIndex;
+
+                        \WP_CLI::log("Indexing '" . $postToIndex->post_title . "' of posttype " . $postType);
+                        do_action('AlgoliaIndex/IndexPostId', $postToIndex->ID);
                     }
                 }
             }
+
+            $post = $globalPost;
+
         } else {
             \WP_CLI::error("Could not find any indexable posttypes. This will occur when no content is public.");
         }
