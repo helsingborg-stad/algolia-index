@@ -257,12 +257,14 @@ class Index
 
             /* Tags */
             $taxonomies = get_post_taxonomies($postId, 'names');
+            $tags = [];
 
-if(is_array($taxonomies) && !empty($taxonomies))
-            foreach ($taxonomies as $taxonomy) {
-                $terms = wp_get_post_terms($postId, $taxonomy, array('fields' => 'names'));
-                if (!empty($terms)){
-                    $tags = array_merge($tags, $terms);
+            if(is_array($taxonomies) && !empty($taxonomies)) {
+                foreach ($taxonomies as $taxonomy) {
+                    $terms = wp_get_post_terms($postId, $taxonomy, array('fields' => 'names'));
+                    if (!empty($terms)){
+                        $tags = array_merge($tags, $terms);
+                    }
                 }
             }
 
