@@ -255,6 +255,7 @@ class Index
     {
         if ($post = get_post($postId)) {
 
+            /* Tags */
             $tags = wp_get_post_terms($postId, 'post_tag', array('fields' => 'names'));
 
             $taxonomies = get_post_taxonomies($postId, 'names');
