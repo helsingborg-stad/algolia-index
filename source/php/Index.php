@@ -254,10 +254,20 @@ class Index
     private static function getPost($postId)
     {
         if ($post = get_post($postId)) {
-            //Tags
-            $tags = array_map(function (\WP_Term $term) {
-                return $term->name;
-            }, wp_get_post_terms($postId, 'post_tag'));
+
+            /* Tags */
+            $taxonomies = get_post_taxonomies($postId, 'names');
+            $tags = [];
+
+            if(is_array($taxonomies) && !empty($taxonomies)) {
+                foreach ($taxonomies as $taxonomy) {
+                    $terms = wp_get_post_terms($postId, $taxonomy, array('fields' => 'names'));
+                    if (!empty($terms)){
+                        $tags = array_merge($tags, $terms);
+                    }
+                }
+            }
+
 
             //Categories
             $categories = array_map(function (\WP_Term $term) {
