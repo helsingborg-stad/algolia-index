@@ -261,6 +261,7 @@ class Index
             $taxonomies = get_post_taxonomies($postId, 'names');
             $taxonomies = array_diff($taxonomies, array('post_tag'));
 
+if(is_array($taxonomies) && !empty($taxonomies))
             foreach ($taxonomies as $taxonomy) {
                 $terms = wp_get_post_terms($postId, $taxonomy, array('fields' => 'names'));
                 if (!empty($terms)){
