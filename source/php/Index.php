@@ -268,7 +268,6 @@ class Index
                 }
             }
 
-
             //Categories
             $categories = array_map(function (\WP_Term $term) {
                 return $term->name;
