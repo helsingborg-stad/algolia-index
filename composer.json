@@ -21,10 +21,7 @@
         }
     ],
     "require": {
-        "algolia/algoliasearch-client-php": "3.3",
-        "google/apiclient": "2.13",
-        "guzzlehttp/guzzle": "7.4",
-        "guzzlehttp/psr7": "2.4"
+        "algolia/algoliasearch-client-php": "3.3"
     },
     "extra": {
         "wordpress-install-dir": "wp",
