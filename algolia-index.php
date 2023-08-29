@@ -24,8 +24,6 @@ define('ALGOLIAINDEX_TEMPLATE_PATH', ALGOLIAINDEX_PATH . 'templates/');
 
 load_plugin_textdomain('algolia-index', false, plugin_basename(dirname(__FILE__)) . '/languages');
 
-require_once ALGOLIAINDEX_PATH . 'vendor/autoload.php';
-
 // Autoload from plugin
 if (file_exists(ALGOLIAINDEX_PATH . 'vendor/autoload.php')) {
     require_once ALGOLIAINDEX_PATH . 'vendor/autoload.php';
