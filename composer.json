@@ -20,6 +20,9 @@
             "url":"https://wpackagist.org"
         }
     ],
+    "autoload": {
+        "psr-4": {"AlgoliaIndex\\": "source/php/"}
+    },
     "require": {
         "algolia/algoliasearch-client-php": "3.3"
     },

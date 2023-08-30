@@ -29,19 +29,7 @@ if (file_exists(ALGOLIAINDEX_PATH . 'vendor/autoload.php')) {
     require_once ALGOLIAINDEX_PATH . 'vendor/autoload.php';
 }
 
-// Autoload from ABSPATH
-if (file_exists(dirname(ABSPATH) . '/vendor/autoload.php')) {
-    require_once dirname(ABSPATH) . '/vendor/autoload.php';
-}
-
-require_once ALGOLIAINDEX_PATH . 'source/php/Vendor/Psr4ClassLoader.php';
 require_once ALGOLIAINDEX_PATH . 'Public.php';
-
-// Instantiate and register the autoloader
-$loader = new AlgoliaIndex\Vendor\Psr4ClassLoader();
-$loader->addPrefix('AlgoliaIndex', ALGOLIAINDEX_PATH);
-$loader->addPrefix('AlgoliaIndex', ALGOLIAINDEX_PATH . 'source/php/');
-$loader->register();
 
 // Start application
 new AlgoliaIndex\App();

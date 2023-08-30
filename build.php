@@ -9,8 +9,26 @@ if (php_sapi_name() !== 'cli') {
 $buildCommands = [];
 
 //Add composer build, if flag --no-composer is undefined.
-if(is_array($argv) && !in_array('--no-composer', $argv)) {
-    $buildCommands[] = 'composer install --prefer-dist --no-progress --no-dev'; 
+//Dump autloader. 
+//Only if composer.json exists.
+if(file_exists('composer.json')) {
+    if(is_array($argv) && !in_array('--no-composer', $argv)) {
+        $buildCommands[] = 'composer install --prefer-dist --no-progress --no-dev'; 
+    }
+    $buildCommands[] = 'composer dump-autoload';
+}
+
+//Run npm if package.json is found
+if(file_exists('package.json') && file_exists('package.lock')) {
+    $buildCommands[] = 'npm ci --no-progress --no-audit';
+} elseif(file_exists('package.json') && !file_exists('package.lock')) {
+    $buildCommands[] = 'npm install --no-progress --no-audit';
+}
+
+//Run build if package.lock is found
+if(file_exists('package.lock')) {
+    $buildCommands[] = 'npx --yes browserslist@latest --update-db';
+    $buildCommands[] = 'npm run build';
 }
 
 // Files and directories not suitable for prod to be removed.
@@ -21,10 +39,13 @@ $removables = [
     'build.php',
     '.npmrc',
     'composer.json',
+    'composer.lock',
     'env-example',
     'webpack.config.js',
     'package-lock.json',
-    'package.json'
+    'package.json',
+    'phpunit.xml.dist',
+    'README.md'
 ];
 
 $dirName = basename(dirname(__FILE__));
