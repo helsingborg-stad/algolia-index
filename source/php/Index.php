@@ -330,6 +330,8 @@ class Index
                 $excerpt .= render_block($block) . " " . PHP_EOL; 
             }
         }
+        
+        $excerpt = preg_replace('/\[(.*?)\]/', '', $excerpt);
 
         return wp_trim_words(
             strip_tags($excerpt)
