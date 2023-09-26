@@ -4,6 +4,7 @@
     "description": "Manages algolia index (with ms-support and mixed indexes)",
     "main": "",
     "scripts": {
+        "build": "",
         "test": "echo \"Error: no test specified\" && exit 1"
     },
     "repository": {
