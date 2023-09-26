@@ -9,19 +9,21 @@
             "email": "sebastian.thulin@helsingborg.se"
         }
     ],
-    "minimum-stability" : "stable",
+    "minimum-stability": "stable",
     "repositories": [
         {
-            "type":"composer",
-            "url":"https://packagist.org"
+            "type": "composer",
+            "url": "https://packagist.org"
         },
         {
-            "type":"composer",
-            "url":"https://wpackagist.org"
+            "type": "composer",
+            "url": "https://wpackagist.org"
         }
     ],
     "autoload": {
-        "psr-4": {"AlgoliaIndex\\": "source/php/"}
+        "psr-4": {
+            "AlgoliaIndex\\": "source/php/"
+        }
     },
     "require": {
         "algolia/algoliasearch-client-php": "3.3"
@@ -29,8 +31,12 @@
     "extra": {
         "wordpress-install-dir": "wp",
         "installer-paths": {
-            "wp-content/plugins/{$name}": ["type:wordpress-plugin"],
-            "wp-content/themes/{$name}": ["type:wordpress-theme"]
+            "wp-content/plugins/{$name}": [
+                "type:wordpress-plugin"
+            ],
+            "wp-content/themes/{$name}": [
+                "type:wordpress-theme"
+            ]
         }
     },
     "scripts": {
@@ -42,5 +48,6 @@
         "phpunit/phpunit": "^9.6",
         "yoast/phpunit-polyfills": "^1.0",
         "php-stubs/wordpress-tests-stubs": "^6.1"
-    }
+    },
+    "version": "2.0.0"
 }
