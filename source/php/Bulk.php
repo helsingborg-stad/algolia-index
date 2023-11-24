@@ -61,7 +61,7 @@ class Bulk
                         $post = $postToIndex;
 
                         \WP_CLI::log("Indexing '" . $postToIndex->post_title . "' of posttype " . $postType);
-                        do_action('AlgoliaIndex/IndexPostId', $postToIndex->ID);
+                        do_action('AlgoliaIndex/IndexPostId', $postToIndex);
                     }
                 }
             }
@@ -85,7 +85,8 @@ class Bulk
     {
         return get_posts([
             'post_type' => $postType,
-            'numberposts' => -1
+            'numberposts' => -1,
+            'suppress_filters' => false,
         ]);
     }
 }

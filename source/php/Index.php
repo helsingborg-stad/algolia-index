@@ -74,14 +74,15 @@ class Index
     /**
      * Submit post to index
      *
-     * @param int $postId
+     * @param int|WP_Post $post
      * @return void
      */
-    public function index($postId)
+    public function index($post)
     {
+        list($post, $postId) = self::getPostAndPostId($post);
         
         //Check if post should be removed
-        $shouldPostBeRemoved = [isset($_POST['exclude-from-search']) && $_POST['exclude-from-search'] == "true", get_post_status($postId) !== 'publish'];
+        $shouldPostBeRemoved = [isset($_POST['exclude-from-search']) && $_POST['exclude-from-search'] == "true", get_post_status($post) !== 'publish'];
         
          if(in_array(true, $shouldPostBeRemoved)) {
             if ($isSplitRecord = self::isSplitRecord($postId)) {
@@ -92,7 +93,7 @@ class Index
         } 
         
         //Check if is indexable post
-        if (!self::shouldIndex($postId)) {
+        if (!self::shouldIndex($post)) {
             return;
         } 
 
@@ -107,7 +108,7 @@ class Index
         }
 
         //Get post data
-        $post = self::getPost($postId);
+        $post = self::getPost($post);
 
         //Sanity check (convert data)
         $post = _wp_json_sanity_check($post, 10);
@@ -138,11 +139,12 @@ class Index
     /**
      * Determine if the post should be indexed.
      *
-     * @param int $post
+     * @param int|WP_Post $post
      * @return boolean
      */
     private static function shouldIndex($post)
     {
+        list($post, $postId) = self::getPostAndPostId($post);
 
         //Do not index on autosave
         if (defined('DOING_AUTOSAVE') && DOING_AUTOSAVE == true) {
@@ -165,12 +167,12 @@ class Index
         }
 
         //Do not index checkbox
-        if(get_post_meta($post, 'exclude_from_search', true)) {
+        if(get_post_meta($postId, 'exclude_from_search', true)) {
             return false;
         }
 
         //Anything else
-        if (!apply_filters('AlgoliaIndex/ShouldIndex', true, $post)) {
+        if (!apply_filters('AlgoliaIndex/ShouldIndex', true, $postId)) {
             return false;
         }
 
@@ -180,11 +182,12 @@ class Index
     /**
      * Check if record in algolia matches locally stored record.
      *
-     * @param int $postId
+     * @param int|WP_Post $post
      * @return boolean
      */
-    private static function hasChanged($postId)
+    private static function hasChanged($post)
     {
+        list($post, $postId) = self::getPostAndPostId($post);
 
         //Make search
         $response = (object) Instance::getIndex()->getObjects([Id::getId($postId)]);
@@ -197,7 +200,7 @@ class Index
         }
 
         //Get stored record
-        $storedRecord = self::getPost($postId);
+        $storedRecord = self::getPost($post);
 
         //Check for null responses, update needed
         if (is_null($indexRecord) || is_null($storedRecord)) {
@@ -248,15 +251,17 @@ class Index
     /**
      * Get post by ID
      *
-     * @param int $postId
+     * @param int|WP_Post $post
      * @return array
      */
-    private static function getPost($postId)
+    private static function getPost($post)
     {
-        if ($post = get_post($postId)) {
+        list($post, $postId) = self::getPostAndPostId($post);
+
+        if ($post = get_post($post)) {
 
             /* Tags */
-            $taxonomies = get_post_taxonomies($postId, 'names');
+            $taxonomies = get_post_taxonomies($post, 'names');
             $tags = [];
 
             if(is_array($taxonomies) && !empty($taxonomies)) {
@@ -317,10 +322,12 @@ class Index
 
     public function getTheExcerpt($post, int $numberOfWords = 55) {
 
-        $excerpt = get_the_excerpt($post); 
+        $excerpt = get_the_excerpt($post);
 
-        if(empty($excerpt) || strlen($excerpt) > 10) {
-           $excerpt = $post->post_content;  
+        if (empty($excerpt) || strlen($excerpt) > 10) {
+            $excerpt = !empty($post->post_content)
+                ? $post->post_content
+                : $excerpt;
         }
 
         $blocks = parse_blocks($excerpt); 
@@ -423,5 +430,22 @@ class Index
         }
 
         return false;
+    }
+
+    /**
+     * Get post and post id
+     *
+     * @param int|WP_Post $post
+     * @return array [WP_Post, int] or [int, int] depending on input.
+     */
+    private static function getPostAndPostId($post)
+    {
+        $postId = $post;
+
+        if (is_a($post, 'WP_Post')) {
+            $postId = $post->ID;
+        }
+
+        return [$post, $postId];
     }
 }
