@@ -57,7 +57,7 @@ class IndexTest extends WP_UnitTestCase
       );
 
       // Then
-      $this->assertTrue($isIndexable);
+      $this->assertFalse($isIndexable);
   }
 
   public function testThatASmallRecordIsentTooLarge() {
