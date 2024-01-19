@@ -278,10 +278,7 @@ class Index
             $categories = array_map(function (\WP_Term $term) {
                 return $term->name;
             }, wp_get_post_terms($postId, 'category'));
-            // var_dump(get_the_post_thumbnail($post, 'medium'));
-            // $imageId = get_post_thumbnail_id($post->ID);
-            // var_dump(wp_get_attachment_image_src($imageId, [110, 60]));
-            // die;
+
             //Post details
             $result =  array(
               'uuid' => Id::getId($postId),
