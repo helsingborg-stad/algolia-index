@@ -1,6 +1,6 @@
 {
     "name": "algolia-index",
-    "version": "3.0.5",
+    "version": "3.0.6",
     "description": "Manages algolia index (with ms-support and mixed indexes)",
     "main": "",
     "scripts": {
