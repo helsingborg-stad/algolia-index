@@ -320,7 +320,7 @@ class Index
         return null;
     }
 
-    public function getTheExcerpt($post, int $numberOfWords = 55) {
+    public static function getTheExcerpt($post, int $numberOfWords = 55) {
 
         $excerpt = get_the_excerpt($post);
 
