@@ -63,9 +63,10 @@ class Options
     public static function publicApiKey()
     {
         //Database
-        $dbOption = self::getOption()['public_api_key'];
-        if (!empty($dbOption) && is_string($dbOption)) {
-            return $dbOption;
+        $options = self::getOption();
+
+        if (isset($options['public_api_key']) && !empty($options['public_api_key']) && is_string($options['public_api_key'])) {
+            return $options['public_api_key'];
         }
         
         if (defined('ALGOLIAINDEX_PUBLIC_API_KEY') && !empty(ALGOLIAINDEX_PUBLIC_API_KEY)) {
