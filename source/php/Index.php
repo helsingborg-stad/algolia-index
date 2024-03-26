@@ -18,6 +18,7 @@ class Index
 
     //Maximum size of record
     private static $_nearMaxLimitSize = 9999;
+    private $wpPostKeys = [];
 
     /**
      * Constructor, runs code on wordpress hooks.
@@ -28,6 +29,8 @@ class Index
         if($hookActions === false) {
             return;
         }
+
+        $this->wpPostKeys = get_object_vars(new \WP_Post((object) []));
 
         //Add & update
         add_action('save_post', array($this, 'index'), self::$_priority);
@@ -114,8 +117,11 @@ class Index
         $post = _wp_json_sanity_check($post, 10);
 
         //Esape html entities
-        array_walk_recursive($post, function (&$value) {
-            $value = htmlentities($value);
+
+        array_walk_recursive($post, function (&$value, $key) {
+            if (in_array($key, $this->wpPostKeys)) {
+                $value = htmlentities($value);
+            }
         });
 
         //Index post
