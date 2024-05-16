@@ -34,6 +34,8 @@ class Index
             'X-Client-User' => get_current_user_id(),
         ]);
 
+        $config = apply_filters('AlgoliaIndex/Config', $config) ?? $config;
+
         //Init client with config
         $client = \Algolia\AlgoliaSearch\SearchClient::createWithConfig($config);
 
