@@ -465,6 +465,12 @@ class Index
         return [$post, $postId];
     }
 
+    /**
+     * Convert data to utf-8
+     *
+     * @param mixed $data
+     * @return mixed
+     */
     public static function utf8ize($data) {
         if (is_array($data)) {
             foreach ($data as $key => $value) {
