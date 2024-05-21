@@ -132,6 +132,8 @@ class Index
             }
         });
 
+        $post = self::utf8ize($post); // UTF-8 Escape
+
         //Index post
         if (self::recordToLarge($post)) {
             $splitRecord = self::splitRecord($post);
@@ -461,5 +463,20 @@ class Index
         }
 
         return [$post, $postId];
+    }
+
+    public static function utf8ize($data) {
+        if (is_array($data)) {
+            foreach ($data as $key => $value) {
+                $data[$key] = self::utf8ize($value);
+            }
+        } else if (is_object($data)) {
+            foreach ($data as $key => $value) {
+                $data->$key = self::utf8ize($value);
+            }
+        } else if (is_string($data)) {
+            return mb_convert_encoding($data, 'UTF-8');
+        }
+        return $data;
     }
 }
