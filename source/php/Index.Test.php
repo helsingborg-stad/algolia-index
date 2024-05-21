@@ -160,7 +160,19 @@ class IndexTest extends WP_UnitTestCase
     $this->assertNotEmpty($truncatedExcerpt);
   }
 
+  public function testThatMalformedUTF8ContentIsFixed() { 
+     
+    // Given
+    $post = [
+      "post_title" => "Test Post",
+      "post_content" => "R\xc3\xb8d P\xc3\xb8lse 🌭"
+    ];
+
+    // When
+    $post = Index::utf8ize($post);
+
+    // Then
+    $this->assertEquals("Rød Pølse 🌭", $post['post_content']);
+  }
+
 }
-
-
-
