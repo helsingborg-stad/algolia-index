@@ -165,17 +165,14 @@ class IndexTest extends WP_UnitTestCase
     // Given
     $post = [
       "post_title" => "Test Post",
-      "post_content" => "This is a test post with a malformed UTF8 character: \x80"
+      "post_content" => "R\xc3\xb8d P\xc3\xb8lse 🌭"
     ];
 
     // When
-    $fixedContent = $this->invokeMethod(
-      $this->targetTestClass,
-      'utf8ize',
-      [$post]
-    );
+    $post = Index::utf8ize($post);
 
-    $this->assertEquals($fixedContent["post_content"], "This is a test post with a malformed UTF8 character: ");
-  }    
+    // Then
+    $this->assertEquals("Rød Pølse 🌭", $post['post_content']);
+  }
 
 }
