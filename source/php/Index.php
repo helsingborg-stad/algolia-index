@@ -136,21 +136,26 @@ class Index
 
         try {
 
-            //Catch error here. 
-            json_encode($post, JSON_THROW_ON_ERROR); 
-
             //Index post
             if (self::recordToLarge($post)) {
                 $splitRecord = self::splitRecord($post);
                 $splitRecord = self::utf8ize($splitRecord);
 
                 if (is_array($splitRecord) && !empty($splitRecord)) {
+
+                    //Catch error here. 
+                    json_encode($splitRecord, JSON_THROW_ON_ERROR); 
+
                     Instance::getIndex()->saveObjects(
                         $splitRecord,
                         ['objectIDKey' => 'uuid']
                     );
                 }
             } else {
+
+                //Catch error here. 
+                json_encode($post, JSON_THROW_ON_ERROR); 
+
                 Instance::getIndex()->saveObject(
                     $post,
                     ['objectIDKey' => 'uuid']
