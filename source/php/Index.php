@@ -134,21 +134,31 @@ class Index
 
         $post = self::utf8ize($post); // UTF-8 Escape
 
-        //Index post
-        if (self::recordToLarge($post)) {
-            $splitRecord = self::splitRecord($post);
+        try {
 
-            if (is_array($splitRecord) && !empty($splitRecord)) {
-                Instance::getIndex()->saveObjects(
-                    $splitRecord,
+            //Catch error here. 
+            json_encode($post, JSON_THROW_ON_ERROR); 
+
+            //Index post
+            if (self::recordToLarge($post)) {
+                $splitRecord = self::splitRecord($post);
+                $splitRecord = self::utf8ize($splitRecord);
+
+                if (is_array($splitRecord) && !empty($splitRecord)) {
+                    Instance::getIndex()->saveObjects(
+                        $splitRecord,
+                        ['objectIDKey' => 'uuid']
+                    );
+                }
+            } else {
+                Instance::getIndex()->saveObject(
+                    $post,
                     ['objectIDKey' => 'uuid']
                 );
             }
-        } else {
-            Instance::getIndex()->saveObject(
-                $post,
-                ['objectIDKey' => 'uuid']
-            );
+
+        } catch(\Exception $e) { 
+            error_log("Algolia Index: Could not save post. " . $post['ID']);
         }
     }
 
