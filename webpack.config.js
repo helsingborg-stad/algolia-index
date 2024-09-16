@@ -8,6 +8,7 @@ const CssMinimizerWebpackPlugin = require('css-minimizer-webpack-plugin');
 const autoprefixer = require('autoprefixer');
 const {getIfUtils, removeEmpty} = require('webpack-config-utils');
 const { ifProduction } = getIfUtils(process.env.NODE_ENV);
+const CopyWebpackPlugin = require('copy-webpack-plugin');
 
 module.exports = {
     mode: ifProduction('production', 'development'),
@@ -17,7 +18,7 @@ module.exports = {
      */
     entry: {
         'css/algolia-index': './source/sass/algolia-index.scss',
-        'js/algolia-index':  ['./source/js/algolia-index'],
+        // 'js/algolia-index':  ['./source/js/algolia-index'],
     },
     
     /**
@@ -27,15 +28,20 @@ module.exports = {
         filename: '[name].js',
         path: path.resolve(__dirname, 'dist'),
         publicPath: '',
-        library: 'AlgoliaIndex',  // Name the variable you want to export globally
-        libraryTarget: 'var',     // Output it as a global var
+       
     },
+    optimization: {
+        minimize: false,    // Disable minimization to avoid mangling the code
+        usedExports: false, // Prevent tree shaking from removing unused code
+      },
     /**
      * Define external dependencies here
      */
     externals: {
+        'AlgoliaIndex': 'var AlgoliaIndex'  // Declare AlgoliaIndex as an external variable
     },
     module: {
+        noParse: /algolia-index\.js$/,
         rules: [
             /**
              * Styles
@@ -134,7 +140,13 @@ module.exports = {
                     },
                 ],
             },
-        }))
+        })),
+
+        new CopyWebpackPlugin({
+            patterns: [
+                { from: 'source/js/algolia-index.js', to: 'js/algolia-index.js' },
+            ],
+        }),
 
     ]).filter(Boolean),
     devtool: 'source-map',
