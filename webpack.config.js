@@ -27,6 +27,8 @@ module.exports = {
         filename: '[name].js',
         path: path.resolve(__dirname, 'dist'),
         publicPath: '',
+        library: 'AlgoliaIndex',  // Name the variable you want to export globally
+        libraryTarget: 'var',     // Output it as a global var
     },
     /**
      * Define external dependencies here
