@@ -1,6 +1,6 @@
 {
     "name": "@helsingborg-stad/algolia-index",
-    "version": "3.1.9",
+    "version": "3.2.0",
     "description": "Manages algolia index (with ms-support and mixed indexes)",
     "main": "dist/js/algolia-index.js",
     "scripts": {

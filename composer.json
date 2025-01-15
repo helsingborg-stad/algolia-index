@@ -49,5 +49,5 @@
         "yoast/phpunit-polyfills": "^1.0",
         "php-stubs/wordpress-tests-stubs": "^6.1"
     },
-    "version": "3.1.9"
+    "version": "3.2.0"
 }
