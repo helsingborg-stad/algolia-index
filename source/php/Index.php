@@ -322,6 +322,7 @@ class Index
               'post_date_formatted' => date(get_option('date_format'), strtotime($post->post_date)),
               'post_modified' => strtotime($post->post_modified),
               'thumbnail' => get_the_post_thumbnail_url($post) ? get_the_post_thumbnail_url($post, [480, 270]) : '',
+              'thumbnail_alt' => get_post_meta(get_post_thumbnail_id($post->ID), '_wp_attachment_image_alt', true),
               'tags' => $tags,
               'categories' => $categories,
               'algolia_timestamp' => current_time("Y-m-d H:i:s"),
