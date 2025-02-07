@@ -316,7 +316,7 @@ class Index
               'ID' => $post->ID,
               'post_title' => apply_filters('the_title', $post->post_title),
               'post_excerpt' => self::getTheExcerpt($post),
-              'content' => strip_tags(apply_filters('the_content', $post->post_content)),
+              'content' => self::stripTags(apply_filters('the_content', $post->post_content)),
               'permalink' => get_permalink($post->ID),
               'post_date' => strtotime($post->post_date),
               'post_date_formatted' => date(get_option('date_format'), strtotime($post->post_date)),
@@ -350,6 +350,21 @@ class Index
         }
 
         return null;
+    }
+
+    public static function stripTags($content) {
+        $removeBodyOfTags = [
+            'script',
+            'style',
+            'noscript'
+        ];
+    
+        $content = preg_replace(sprintf(
+            '/<(%s)\b[^>]*>.*?<\/\1>/is', 
+            implode('|', $removeBodyOfTags)
+        ), '', $content);
+
+        return strip_tags($content);
     }
 
     public static function getTheExcerpt($post, int $numberOfWords = 55) {
