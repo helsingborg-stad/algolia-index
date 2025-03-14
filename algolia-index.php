@@ -22,7 +22,9 @@ define('ALGOLIAINDEX_PATH', plugin_dir_path(__FILE__));
 define('ALGOLIAINDEX_URL', plugins_url('', __FILE__));
 define('ALGOLIAINDEX_TEMPLATE_PATH', ALGOLIAINDEX_PATH . 'templates/');
 
-load_plugin_textdomain('algolia-index', false, plugin_basename(dirname(__FILE__)) . '/languages');
+add_action('init', function () {
+    load_plugin_textdomain('algolia-index', false, plugin_basename(dirname(__FILE__)) . '/languages');
+});
 
 // Autoload from plugin
 if (file_exists(ALGOLIAINDEX_PATH . 'vendor/autoload.php')) {
