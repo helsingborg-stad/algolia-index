@@ -385,7 +385,10 @@ class Index
             }
         }
         
+        // Sanitizing excerpt
         $excerpt = preg_replace('/\[(.*?)\]/', '', $excerpt);
+        $excerpt = preg_replace('/<style[^>]*>.*?<\/style>/is', '', $excerpt);
+        $excerpt = preg_replace('/<script[^>]*>.*?<\/script>/is', '', $excerpt);
 
         return wp_trim_words(
             strip_tags($excerpt)
