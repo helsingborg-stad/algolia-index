@@ -2,8 +2,8 @@
 
 namespace AlgoliaIndex;
 
-use \AlgoliaIndex\Helper\Index as Instance;
 use \AlgoliaIndex\Helper\Id as Id;
+use \AlgoliaIndex\Helper\Index as Instance;
 use \AlgoliaIndex\Helper\Indexable as Indexable;
 use \AlgoliaIndex\Helper\Log as Log;
 
@@ -221,14 +221,10 @@ class Index
         list($post, $postId) = self::getPostAndPostId($post);
 
         //Make search
-        $response = (object) Instance::getIndex()->getObjects([Id::getId($postId)]);
+        $hits = Instance::getIndex()->getObjects([Id::getId($postId)]);
 
         //Get result
-        if (isset($response->results) && is_array($response->results) && !empty($response->results)) {
-            $indexRecord = is_array($response->results) ? array_pop($response->results) : [];
-        } else {
-            $indexRecord = [];
-        }
+        $indexRecord = !empty($hits) ? $hits[0] : null;
 
         //Get stored record
         $storedRecord = self::getPost($post);
@@ -473,10 +469,10 @@ class Index
      */
     private static function isSplitRecord($postId)
     {
-        $response = (object) Instance::getIndex()->getObjects([Id::getId($postId)]);
+        $response = Instance::getIndex()->getObjects([Id::getId($postId)]);
 
-        if (!is_null($response->results[0]) && array_key_exists(self::$partialObjectDistinctKey, $response->results[0])) {
-            return $response->results[0][self::$partialObjectTotalAmount];
+        if (!empty($response) && !empty($response[0]) && array_key_exists(self::$partialObjectDistinctKey, $response[0])) {
+            return $response[0][self::$partialObjectTotalAmount];
         }
 
         return false;

@@ -58,7 +58,9 @@ class AlgoliaProvider implements \AlgoliaIndex\Provider\AbstractProvider
      * @inheritDoc
      */
     public function getObjects(array $objectIds) {
-        return $this->index->getObjects($objectIds);
+        $response = (object) $this->index->getObjects($objectIds);
+        
+        return !empty($response) && !empty($response->results) ? $response->results : [];
     }
 
     /**
