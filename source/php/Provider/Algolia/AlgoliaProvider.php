@@ -8,7 +8,7 @@ class AlgoliaProvider implements \AlgoliaIndex\Provider\AbstractProvider
 
     protected $config;
 
-    protected $index;
+    protected \Algolia\AlgoliaSearch\SearchIndex $index;
 
     public function __construct(
         string $applicationId, 
@@ -57,9 +57,8 @@ class AlgoliaProvider implements \AlgoliaIndex\Provider\AbstractProvider
     /**
      * @inheritDoc
      */
-    public function getObjects(array $objectIds) {
+    public function getObjects(array $objectIds): array {
         $response = (object) $this->index->getObjects($objectIds);
-        
         return !empty($response) && !empty($response->results) ? $response->results : [];
     }
 

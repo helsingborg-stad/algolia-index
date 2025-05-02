@@ -18,5 +18,5 @@ interface AbstractProvider
 
     public function saveObjects(array $objects, array $options = []);
 
-    public function getObjects(array $objectIds);
+    public function getObjects(array $objectIds) : array;
 }
