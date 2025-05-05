@@ -8,6 +8,9 @@ class ProviderFactory
 {
     public static function createFromEnv(): AbstractProvider
     {
-        return \AlgoliaIndex\Provider\Algolia\AlgoliaFactory::createFromEnv();
-    }    
+        return apply_filters(
+            "AlgoliaIndex/Provider/Factory", 
+            fn () => \AlgoliaIndex\Provider\Algolia\AlgoliaFactory::createFromEnv()
+        )();
+    }
 }
