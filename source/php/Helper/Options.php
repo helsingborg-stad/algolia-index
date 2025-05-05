@@ -12,7 +12,10 @@ class Options
 
     public static function isConfigured()
     {
-        return !(bool) (empty(self::applicationId()) || empty(self::apiKey()));
+        return !(bool) \apply_filters(
+            'AlgoliaIndex/Options/IsConfigured',
+            (empty(self::applicationId()) || empty(self::apiKey()))
+        );
     }
 
     /**
