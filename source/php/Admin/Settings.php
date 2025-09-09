@@ -39,6 +39,7 @@ class Settings
                 'menu_slug'         => Settings::OPTIONS_PAGE_SLUG,
                 'capability'        => 'manage_options',
                 'parent_slug'       => 'options-general.php',
+                'autoload'          => true,
             ]);
         }
     }
