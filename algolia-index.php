@@ -26,6 +26,23 @@ add_action('init', function () {
     load_plugin_textdomain('algolia-index', false, plugin_basename(dirname(__FILE__)) . '/languages');
 });
 
+// Acf auto import and export
+add_action('acf/init', function () {
+    if (class_exists('\AcfExportManager\AcfExportManager')) {
+        /** @noinspection PhpFullyQualifiedNameUsageInspection */
+        $acfExportManager = new \AcfExportManager\AcfExportManager();
+        $acfExportManager->setTextdomain('algolia-index');
+        $acfExportManager->setExportFolder(
+            ALGOLIAINDEX_PATH.'source/php/AcfFields/'
+        );
+        $acfExportManager->autoExport([
+            'algolia-index-general-settings'        => 'group_68bfb24b7a4a2',
+            'algolia-index-algolia-provider'        => 'group_68bfad0b6fc7b',
+        ]);
+        $acfExportManager->import();
+    }
+});
+
 // Autoload from plugin
 if (file_exists(ALGOLIAINDEX_PATH . 'vendor/autoload.php')) {
     require_once ALGOLIAINDEX_PATH . 'vendor/autoload.php';
