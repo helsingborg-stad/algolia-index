@@ -8,7 +8,7 @@
         0 => array(
             'key' => 'field_68bfb24b6982b',
             'label' => __('Search Provider', 'algolia-index'),
-            'name' => 'algolia_search_provider',
+            'name' => 'algolia_index_search_provider',
             'aria-label' => '',
             'type' => 'select',
             'instructions' => '',
