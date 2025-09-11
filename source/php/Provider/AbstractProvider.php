@@ -4,7 +4,7 @@ namespace AlgoliaIndex\Provider;
 
 interface AbstractProvider
 {
-    public function setSettings(array $settings);
+    public function setSettings(array $settings = []);
 
     public function search(string $query);
 

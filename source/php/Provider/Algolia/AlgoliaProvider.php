@@ -86,7 +86,45 @@ class AlgoliaProvider implements \AlgoliaIndex\Provider\AbstractProvider
     /**
      * @inheritDoc
      */
-    public function setSettings(array $settings) {
+    public function setSettings(array $settings = []) {
+         // Define searchable attributes
+         $searchableAttributes = apply_filters('AlgoliaIndex/SearchableAttributes', [
+            'post_title',
+            'post_excerpt',
+            'content',
+            'permalink',
+            'tags',
+            'categories'
+        ]);
+
+        //AttributesToSnippet
+        $attributesToSnippet = apply_filters('AlgoliaIndex/AttributesToSnippet', [
+            'content:40',
+            'permalink:15',
+            'post_title:7'
+        ]);
+
+        //Facetingattributes
+        $attributesForFaceting = apply_filters('AlgoliaIndex/AttributesToSnippet', [
+            'searchable(origin_site)'
+        ]);
+  
+        $settings = array_merge(
+            [
+                'searchableAttributes'    => $searchableAttributes,
+                'attributeForDistinct'    => 'partial_object_distinct_key',
+                'distinct'                => true,
+                'hitsPerPage'             => apply_filters('AlgoliaIndex/HitsPerPage', 15),
+                'paginationLimitedTo'     => apply_filters('AlgoliaIndex/PaginationLimitedTo', 200),
+                'attributesToSnippet'     => $attributesToSnippet,
+                'snippetEllipsisText'     => apply_filters('AlgoliaIndex/SnippetEllipsisText', "..."),
+                'attributesForFaceting'   => $attributesForFaceting,
+                'indexLanguages'          => !empty(get_bloginfo('language')) ? [substr(get_bloginfo('language'), 0, 2)] : [],
+                'removeWordsIfNoResults'  => 'allOptional'
+            ],
+            $settings
+        );
+
         return $this->index->setSettings($settings);
     }
 }
