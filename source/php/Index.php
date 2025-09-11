@@ -6,6 +6,7 @@ use \AlgoliaIndex\Helper\Id as Id;
 use \AlgoliaIndex\Helper\Index as Instance;
 use \AlgoliaIndex\Helper\Indexable as Indexable;
 use \AlgoliaIndex\Helper\Log as Log;
+use AlgoliaIndex\Provider\AbstractProvider;
 
 class Index
 {
@@ -22,17 +23,20 @@ class Index
     // Post Object keys
     private $wpPostObjectKeys = [];
 
+    private AbstractProvider $searchDB;
+
     /**
      * Constructor, runs code on wordpress hooks.
      */
-    public function __construct($hookActions = true)
+    public function __construct($hookActions = true, ?AbstractProvider $searchDB = null)
     {
+        $this->wpPostObjectKeys = array_keys(get_object_vars(new \WP_Post((object) [])));
+        $this->searchDB = $searchDB ?? Instance::getIndex();
+
         //Test bailout
         if($hookActions === false) {
             return;
         }
-
-        $this->wpPostObjectKeys = array_keys(get_object_vars(new \WP_Post((object) [])));
         
         //Add & update
         add_action('save_post', array($this, 'index'), self::$_priority);
@@ -66,14 +70,14 @@ class Index
 
           //Delete split records
             if(!empty($ids)) {
-                return Instance::getIndex()->deleteObjects($ids);
+                return $this->searchDB->deleteObjects($ids);
             } else {
                 Log::error('Could not create array of ids for deletion (splitrecord). Trying to delete single post.');
             }
         }
 
       //Delete normal records
-        return Instance::getIndex()->deleteObject(Id::getId($postId));
+        return $this->searchDB->deleteObject(Id::getId($postId));
     }
 
     /**
@@ -90,7 +94,7 @@ class Index
         $shouldPostBeRemoved = [isset($_POST['exclude-from-search']) && $_POST['exclude-from-search'] == "true", get_post_status($post) !== 'publish'];
         
          if(in_array(true, $shouldPostBeRemoved)) {
-            if ($isSplitRecord = self::isSplitRecord($postId)) {
+            if ($isSplitRecord = $this->isSplitRecord($postId)) {
                 self::delete($postId, $isSplitRecord);
             } else {
                 self::delete($postId);
@@ -103,11 +107,11 @@ class Index
         } 
 
         //Delete split record (no check if has changed)
-        if ($isSplitRecord = self::isSplitRecord($postId)) {
+        if ($isSplitRecord = $this->isSplitRecord($postId)) {
             self::delete($postId, $isSplitRecord);
         } else {
           //Check if the new post differs from indexed record (not applicable for split records)
-            if (!self::hasChanged($postId)) {
+            if (!$this->hasChanged($postId)) {
                 return;
             }
         }
@@ -146,7 +150,7 @@ class Index
                     //Catch error here. 
                     json_encode($splitRecord, JSON_THROW_ON_ERROR); 
 
-                    Instance::getIndex()->saveObjects(
+                    $this->searchDB->saveObjects(
                         $splitRecord,
                         ['objectIDKey' => 'uuid']
                     );
@@ -156,7 +160,7 @@ class Index
                 //Catch error here. 
                 json_encode($post, JSON_THROW_ON_ERROR); 
 
-                Instance::getIndex()->saveObject(
+                $this->searchDB->saveObject(
                     $post,
                     ['objectIDKey' => 'uuid']
                 );
@@ -216,12 +220,12 @@ class Index
      * @param int|WP_Post $post
      * @return boolean
      */
-    private static function hasChanged($post)
+    private function hasChanged($post)
     {
         list($post, $postId) = self::getPostAndPostId($post);
 
         //Make search
-        $hits = Instance::getIndex()->getObjects([Id::getId($postId)]);
+        $hits = $this->searchDB->getObjects([Id::getId($postId)]);
 
         //Get result
         $indexRecord = !empty($hits) ? $hits[0] : null;
@@ -467,9 +471,9 @@ class Index
      * @param int $postId
      * @return boolean / integer
      */
-    private static function isSplitRecord($postId)
+    private function isSplitRecord($postId)
     {
-        $response = Instance::getIndex()->getObjects([Id::getId($postId)]);
+        $response = $this->searchDB->getObjects([Id::getId($postId)]);
 
         if (!empty($response) && !empty($response[0]) && array_key_exists(self::$partialObjectDistinctKey, $response[0])) {
             return $response[0][self::$partialObjectTotalAmount];
