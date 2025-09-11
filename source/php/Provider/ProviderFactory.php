@@ -6,13 +6,19 @@ use AlgoliaIndex\Provider\Algolia\AlgoliaProvider;
 
 class ProviderFactory
 {
-    public static function createFromEnv(): AbstractProvider
+    public static function getProviders()
     {
-        $providers = apply_filters("AlgoliaIndex/Provider/Factory", [
+        return apply_filters("AlgoliaIndex/Provider/Factory", [
             'algolia' => fn () => \AlgoliaIndex\Provider\Algolia\AlgoliaFactory::createFromEnv()    
         ]);
-
-        $provider = apply_filters('AlgoliaIndex/Provider', 'algolia', $providers);
+    }
+    
+    public static function createFromEnv($provider = null): AbstractProvider
+    {
+        $providers = self::getProviders();
+        $provider = !empty($provider) 
+            ? $provider 
+            : apply_filters('AlgoliaIndex/Provider', 'algolia', $providers);
 
         if (!is_string($provider)) {
             throw new \InvalidArgumentException('Provider name must be a string');

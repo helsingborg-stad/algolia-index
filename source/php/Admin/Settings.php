@@ -4,22 +4,23 @@ namespace AlgoliaIndex\Admin;
 
 use \AlgoliaIndex\Helper\Index as Instance;
 use \AlgoliaIndex\Helper\Options as Options;
+use AlgoliaIndex\Provider\ProviderFactory;
 
 class Settings
 {   
     private const OPTIONS_PAGE_SLUG = 'algolia-index-settings';
-    private const ACF_TO_LEGACY_OPTIONS_MAP  = [
+    public const ACF_TO_LEGACY_OPTIONS_MAP  = [
         'algolia_index_application_id'    => 'application_id',
         'algolia_index_api_key'           => 'api_key',
         'algolia_index_public_api_key'    => 'public_api_key',
         'algolia_index_index_name'        => 'index_name',
     ];
 
-
     public function __construct()
     {
         add_action('acf/init', [$this, 'registerOptionsPage']);
         add_action('acf/save_post', [$this, 'pushSettingsOnSave'], 20);
+        add_filter('acf/load_field', [$this, 'addProvidersAsOptions'], 10, 1);
         
         // Migrate legacy options to ACF fields
         add_filter('acf/load_value', [$this, 'loadLegacyOptionValues'], 10, 3);
@@ -27,6 +28,17 @@ class Settings
         
         // Trigger settings send for algolia provider
         add_action('AlgoliaIndex/SendSettings', array($this, 'sendAlgoliaSettings'));
+    }
+
+    public function addProvidersAsOptions($field)
+    {
+        if ($field['name'] === 'algolia_index_search_provider') {
+            $providers = \array_keys(ProviderFactory::getProviders());
+            foreach ($providers as $provider) {
+                $field['choices'][$provider] = ucfirst($provider);
+            }
+        }
+        return $field;
     }
 
 
