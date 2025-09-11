@@ -18,7 +18,7 @@ class ProviderFactory
         $providers = self::getProviders();
         $provider = !empty($provider) 
             ? $provider 
-            : apply_filters('AlgoliaIndex/Provider', 'algolia', $providers);
+            : get_field('algolia_index_search_provider', 'option') ?? 'algolia';
 
         if (!is_string($provider)) {
             throw new \InvalidArgumentException('Provider name must be a string');
