@@ -290,18 +290,21 @@ class Index
         if ($post = get_post($post)) {
 
             /* Tags */
-            $taxonomies = get_post_taxonomies($post, 'names');
+            $taxonomies = get_post_taxonomies($post);
             $tags = [];
 
-            if(is_array($taxonomies) && !empty($taxonomies)) {
+            if (is_array($taxonomies) && !empty($taxonomies)) {
                 foreach ($taxonomies as $taxonomy) {
-                    $terms = wp_get_post_terms($postId, $taxonomy, array('fields' => 'names'));
-                    if (!empty($terms)){
-                        $tags = array_merge($tags, $terms);
+                    if ($taxonomy !== 'category') {    
+                        $tags = array_merge(
+                            $tags,
+                            array_map(function (\WP_Term $term) {
+                                return $term->name;
+                            }, wp_get_post_terms($postId, $taxonomy))
+                        );
                     }
                 }
             }
-
 
             //Categories
             $categories = array_map(function (\WP_Term $term) {
