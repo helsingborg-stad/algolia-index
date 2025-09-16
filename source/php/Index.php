@@ -139,7 +139,7 @@ class Index
 
         try {
             //Index post
-            if (self::recordToLarge($post)) {
+            if ($this->recordToLarge($post)) {
                 $splitRecord = self::splitRecord($post);
                 $splitRecord = self::utf8ize($splitRecord);
 
@@ -403,7 +403,7 @@ class Index
      * @param array $record
      * @return void
      */
-    private static function recordToLarge($record)
+    private function recordToLarge($record)
     {
         if ($this->searchDB->shouldSplitRecord() 
             && mb_strlen(serialize((array) $record), '8bit') >= self::$_nearMaxLimitSize) {
