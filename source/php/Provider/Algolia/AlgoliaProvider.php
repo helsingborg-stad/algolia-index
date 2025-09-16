@@ -127,4 +127,8 @@ class AlgoliaProvider implements \AlgoliaIndex\Provider\AbstractProvider
 
         return $this->index->setSettings($settings);
     }
+
+    public function shouldSplitRecord(): bool {
+        return true;
+    }
 }

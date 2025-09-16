@@ -123,7 +123,6 @@ class Index
         $post = _wp_json_sanity_check($post, 10);
 
         //Esape html entities
-
         array_walk_recursive($post, function (&$value, $key) {
             if (in_array($key, $this->wpPostObjectKeys)) {
 
@@ -139,7 +138,6 @@ class Index
         $post = self::utf8ize($post); // UTF-8 Escape
 
         try {
-
             //Index post
             if (self::recordToLarge($post)) {
                 $splitRecord = self::splitRecord($post);
@@ -404,7 +402,8 @@ class Index
      */
     private static function recordToLarge($record)
     {
-        if (mb_strlen(serialize((array) $record), '8bit') >= self::$_nearMaxLimitSize) {
+        if ($this->searchDB->shouldSplitRecord() 
+            && mb_strlen(serialize((array) $record), '8bit') >= self::$_nearMaxLimitSize) {
             return apply_filters('AlgoliaIndex/RecordToLarge', true);
         }
         return apply_filters('AlgoliaIndex/RecordToLarge', false);
