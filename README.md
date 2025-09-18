@@ -50,6 +50,7 @@ Manages algolia index (with ms-support and mixed indexes). This is intended to b
 ### WP CLI Arguments
 - To clear index* before build, add flag --clearindex=true. 
 - To send required search configuration before build, add flag --settings=true.
+- To index using a different search provider (then the active one), add flag --provider={provider-name} (eg. algolia)
 
 ### Example
 wp site list --field=url --public=1 --archived=0 --deleted=0  --allow-root | xargs -n1 -I % wp algolia-index build --settings=true --url=% --allow-root
