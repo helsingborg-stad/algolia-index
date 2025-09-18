@@ -2,10 +2,11 @@
 
 namespace AlgoliaIndex;
 
-use \AlgoliaIndex\Helper\Index as Instance;
 use \AlgoliaIndex\Helper\Id as Id;
+use \AlgoliaIndex\Helper\Index as Instance;
 use \AlgoliaIndex\Helper\Indexable as Indexable;
 use \AlgoliaIndex\Helper\Log as Log;
+use AlgoliaIndex\Provider\AbstractProvider;
 
 class Index
 {
@@ -22,17 +23,20 @@ class Index
     // Post Object keys
     private $wpPostObjectKeys = [];
 
+    private AbstractProvider $searchDB;
+
     /**
      * Constructor, runs code on wordpress hooks.
      */
-    public function __construct($hookActions = true)
+    public function __construct($hookActions = true, ?AbstractProvider $searchDB = null)
     {
+        $this->wpPostObjectKeys = array_keys(get_object_vars(new \WP_Post((object) [])));
+        $this->searchDB = $searchDB ?? Instance::getIndex();
+
         //Test bailout
         if($hookActions === false) {
             return;
         }
-
-        $this->wpPostObjectKeys = array_keys(get_object_vars(new \WP_Post((object) [])));
         
         //Add & update
         add_action('save_post', array($this, 'index'), self::$_priority);
@@ -66,14 +70,14 @@ class Index
 
           //Delete split records
             if(!empty($ids)) {
-                return Instance::getIndex()->deleteObjects($ids);
+                return $this->searchDB->deleteObjects($ids);
             } else {
                 Log::error('Could not create array of ids for deletion (splitrecord). Trying to delete single post.');
             }
         }
 
       //Delete normal records
-        return Instance::getIndex()->deleteObject(Id::getId($postId));
+        return $this->searchDB->deleteObject(Id::getId($postId));
     }
 
     /**
@@ -90,7 +94,7 @@ class Index
         $shouldPostBeRemoved = [isset($_POST['exclude-from-search']) && $_POST['exclude-from-search'] == "true", get_post_status($post) !== 'publish'];
         
          if(in_array(true, $shouldPostBeRemoved)) {
-            if ($isSplitRecord = self::isSplitRecord($postId)) {
+            if ($isSplitRecord = $this->isSplitRecord($postId)) {
                 self::delete($postId, $isSplitRecord);
             } else {
                 self::delete($postId);
@@ -103,11 +107,11 @@ class Index
         } 
 
         //Delete split record (no check if has changed)
-        if ($isSplitRecord = self::isSplitRecord($postId)) {
+        if ($isSplitRecord = $this->isSplitRecord($postId)) {
             self::delete($postId, $isSplitRecord);
         } else {
           //Check if the new post differs from indexed record (not applicable for split records)
-            if (!self::hasChanged($postId)) {
+            if (!$this->hasChanged($postId)) {
                 return;
             }
         }
@@ -119,7 +123,6 @@ class Index
         $post = _wp_json_sanity_check($post, 10);
 
         //Esape html entities
-
         array_walk_recursive($post, function (&$value, $key) {
             if (in_array($key, $this->wpPostObjectKeys)) {
 
@@ -135,9 +138,8 @@ class Index
         $post = self::utf8ize($post); // UTF-8 Escape
 
         try {
-
             //Index post
-            if (self::recordToLarge($post)) {
+            if ($this->recordToLarge($post)) {
                 $splitRecord = self::splitRecord($post);
                 $splitRecord = self::utf8ize($splitRecord);
 
@@ -146,7 +148,7 @@ class Index
                     //Catch error here. 
                     json_encode($splitRecord, JSON_THROW_ON_ERROR); 
 
-                    Instance::getIndex()->saveObjects(
+                    $this->searchDB->saveObjects(
                         $splitRecord,
                         ['objectIDKey' => 'uuid']
                     );
@@ -156,7 +158,7 @@ class Index
                 //Catch error here. 
                 json_encode($post, JSON_THROW_ON_ERROR); 
 
-                Instance::getIndex()->saveObject(
+                $this->searchDB->saveObject(
                     $post,
                     ['objectIDKey' => 'uuid']
                 );
@@ -216,19 +218,15 @@ class Index
      * @param int|WP_Post $post
      * @return boolean
      */
-    private static function hasChanged($post)
+    private function hasChanged($post)
     {
         list($post, $postId) = self::getPostAndPostId($post);
 
         //Make search
-        $response = (object) Instance::getIndex()->getObjects([Id::getId($postId)]);
+        $hits = $this->searchDB->getObjects([Id::getId($postId)]);
 
         //Get result
-        if (isset($response->results) && is_array($response->results) && !empty($response->results)) {
-            $indexRecord = is_array($response->results) ? array_pop($response->results) : [];
-        } else {
-            $indexRecord = [];
-        }
+        $indexRecord = !empty($hits) ? $hits[0] : null;
 
         //Get stored record
         $storedRecord = self::getPost($post);
@@ -292,18 +290,21 @@ class Index
         if ($post = get_post($post)) {
 
             /* Tags */
-            $taxonomies = get_post_taxonomies($post, 'names');
+            $taxonomies = get_post_taxonomies($post);
             $tags = [];
 
-            if(is_array($taxonomies) && !empty($taxonomies)) {
+            if (is_array($taxonomies) && !empty($taxonomies)) {
                 foreach ($taxonomies as $taxonomy) {
-                    $terms = wp_get_post_terms($postId, $taxonomy, array('fields' => 'names'));
-                    if (!empty($terms)){
-                        $tags = array_merge($tags, $terms);
+                    if ($taxonomy !== 'category') {    
+                        $tags = array_merge(
+                            $tags,
+                            array_map(function (\WP_Term $term) {
+                                return $term->name;
+                            }, wp_get_post_terms($postId, $taxonomy))
+                        );
                     }
                 }
             }
-
 
             //Categories
             $categories = array_map(function (\WP_Term $term) {
@@ -402,9 +403,10 @@ class Index
      * @param array $record
      * @return void
      */
-    private static function recordToLarge($record)
+    private function recordToLarge($record)
     {
-        if (mb_strlen(serialize((array) $record), '8bit') >= self::$_nearMaxLimitSize) {
+        if ($this->searchDB->shouldSplitRecord() 
+            && mb_strlen(serialize((array) $record), '8bit') >= self::$_nearMaxLimitSize) {
             return apply_filters('AlgoliaIndex/RecordToLarge', true);
         }
         return apply_filters('AlgoliaIndex/RecordToLarge', false);
@@ -471,12 +473,12 @@ class Index
      * @param int $postId
      * @return boolean / integer
      */
-    private static function isSplitRecord($postId)
+    private function isSplitRecord($postId)
     {
-        $response = (object) Instance::getIndex()->getObjects([Id::getId($postId)]);
+        $response = $this->searchDB->getObjects([Id::getId($postId)]);
 
-        if (!is_null($response->results[0]) && array_key_exists(self::$partialObjectDistinctKey, $response->results[0])) {
-            return $response->results[0][self::$partialObjectTotalAmount];
+        if (!empty($response) && !empty($response[0]) && array_key_exists(self::$partialObjectDistinctKey, $response[0])) {
+            return $response[0][self::$partialObjectTotalAmount];
         }
 
         return false;

@@ -12,7 +12,10 @@ class Options
 
     public static function isConfigured()
     {
-        return !(bool) (empty(self::applicationId()) || empty(self::apiKey()));
+        return !(bool) \apply_filters(
+            'AlgoliaIndex/Options/IsConfigured',
+            (empty(self::applicationId()) || empty(self::apiKey()))
+        );
     }
 
     /**
@@ -108,9 +111,11 @@ class Options
      */
     private static function getOption()
     {
-        return array_merge(
-            array_flip(['application_id', 'api_key', 'index_name']),
-            array_filter((array) get_option('algolia_index'))
-        );
+        return [
+            'application_id'    => get_field('algolia_index_application_id', 'option') ?: '', 
+            'api_key'           => get_field('algolia_index_api_key', 'option') ?: '',
+            'public_api_key'    => get_field('algolia_index_public_api_key', 'option') ?: '',
+            'index_name'        => get_field('algolia_index_index_name', 'option') ?: '',
+        ];
     }
 }

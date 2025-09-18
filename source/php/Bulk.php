@@ -26,6 +26,10 @@ class Bulk
      */
     public function build($args, $assocArgs)
     {
+        $provider = isset($assocArgs['provider']) ? $assocArgs['provider'] : null;
+        $instance = Provider\ProviderFactory::createFromEnv($provider);
+        $databaseIndex = new Index(false, $instance);
+
         if (!Options::isConfigured()) {
             \WP_CLI::log("Search must be configured before indexing, terminating...");
             return;
@@ -34,13 +38,13 @@ class Bulk
         //Send settings
         if (isset($assocArgs['settings']) && $assocArgs['settings'] == "true") {
             \WP_CLI::log("Sending settings...");
-            do_action('AlgoliaIndex/SendSettings');
+            $instance->setSettings();
         }
 
         // Clear index if flag is true
         if (isset($assocArgs['clearindex']) && $assocArgs['clearindex'] == "true") {
             \WP_CLI::log("Clearing index...");
-            Instance::getIndex()->clearObjects();
+            $instance->clearObjects();
         }
 
         \WP_CLI::log("Starting index build for site " . get_option('home'));
@@ -61,7 +65,7 @@ class Bulk
                         $post = $postToIndex;
 
                         \WP_CLI::log("Indexing '" . $postToIndex->post_title . "' of posttype " . $postType);
-                        do_action('AlgoliaIndex/IndexPostId', $postToIndex);
+                        $databaseIndex->index($postToIndex);
                     }
                 }
             }

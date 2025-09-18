@@ -3,6 +3,8 @@
 namespace AlgoliaIndex\Helper;
 
 use \AlgoliaIndex\Helper\Options as Options;
+use \AlgoliaIndex\Provider\AbstractProvider;
+use AlgoliaIndex\Provider\ProviderFactory;
 
 class Index
 {
@@ -11,35 +13,14 @@ class Index
     /**
      * Get the index
      *
-     * @return AlgoliaIndex
+     * @return AbstractProvider
      */
-    public static function getIndex()
+    public static function getIndex(): AbstractProvider
     {
-        
-        //Used cached instance
         if (!is_null(self::$_index)) {
             return self::$_index;
         }
 
-        //Setup config details with auth
-        $config = \Algolia\AlgoliaSearch\Config\SearchConfig::create(
-            Options::applicationId(),
-            Options::apiKey()
-        );
-
-        //Tell algolia if running in cron and/or cli
-        $config->setDefaultHeaders([
-            'X-Client-Cli' => defined('WP_CLI_VERSION') ? WP_CLI_VERSION : 'false',
-            'X-Client-Cron' => defined( 'DOING_CRON' ) ? 'true' : 'false',
-            'X-Client-User' => get_current_user_id(),
-        ]);
-
-        $config = apply_filters('AlgoliaIndex/Config', $config) ?? $config;
-
-        //Init client with config
-        $client = \Algolia\AlgoliaSearch\SearchClient::createWithConfig($config);
-
-        //Select index
-        return self::$_index = $client->initIndex(Options::indexName());
+        return self::$_index = ProviderFactory::createFromEnv();
     }
 }
