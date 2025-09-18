@@ -37,6 +37,7 @@ Manages algolia index (with ms-support and mixed indexes). This is intended to b
 - AlgoliaIndex/SnippetEllipsisText: Suffix for snippet.
 - AlgoliaIndex/BackendSearchActive: Send false to disable backend search.
 - AlgoliaIndex/IndexablePostStatuses: What post statuses to allow for index. 
+- AlgoliaIndex/Provider/Factory: What search database providers are avalible - provider name as key and lambda returning an AbstractProvider as value.
 
 ## Actions
 - AlgoliaIndex/IndexPostId: Trigger reindex on a post id. 
