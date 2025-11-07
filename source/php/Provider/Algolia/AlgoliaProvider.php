@@ -106,7 +106,8 @@ class AlgoliaProvider implements \AlgoliaIndex\Provider\AbstractProvider
 
         //Facetingattributes
         $attributesForFaceting = apply_filters('AlgoliaIndex/AttributesToSnippet', [
-            'searchable(origin_site)'
+            'searchable(origin_site)',
+            'searchable(categories)',
         ]);
   
         $settings = array_merge(
