@@ -15,7 +15,8 @@
 <ul>
  <li>The "attribute" should match a enabled facet in the search provider. </li>
  <li>The "label" is the value that will show up in the facetting panel for the user.</li>
-</ul>', 'algolia-index'),
+</ul>
+Note: Facetting feature requires the algolia JS search extension to work.', 'algolia-index'),
             'required' => 0,
             'conditional_logic' => 0,
             'wrapper' => array(

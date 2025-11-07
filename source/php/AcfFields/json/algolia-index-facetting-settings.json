@@ -8,7 +8,7 @@
             "name": "facetting",
             "aria-label": "",
             "type": "repeater",
-            "instructions": "Provide the facetting configuration here. If it is left blank, no facetting will be displayed. \r\n<ul>\r\n <li>The \"attribute\" should match a enabled facet in the search provider. <\/li>\r\n <li>The \"label\" is the value that will show up in the facetting panel for the user.<\/li>\r\n<\/ul>",
+            "instructions": "Provide the facetting configuration here. If it is left blank, no facetting will be displayed. \r\n<ul>\r\n <li>The \"attribute\" should match a enabled facet in the search provider. <\/li>\r\n <li>The \"label\" is the value that will show up in the facetting panel for the user.<\/li>\r\n<\/ul>\r\nNote: Facetting feature requires the algolia JS search extension to work.",
             "required": 0,
             "conditional_logic": 0,
             "wrapper": {
