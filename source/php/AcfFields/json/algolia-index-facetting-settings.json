@@ -5,10 +5,10 @@
         {
             "key": "field_690dfe47bba6b",
             "label": "Facetting",
-            "name": "facetting",
+            "name": "algolia_index_facetting",
             "aria-label": "",
             "type": "repeater",
-            "instructions": "Provide the facetting configuration here. If it is left blank, no facetting will be displayed. \r\n<ul>\r\n <li>The \"attribute\" should match a enabled facet in the search provider. <\/li>\r\n <li>The \"label\" is the value that will show up in the facetting panel for the user.<\/li>\r\n<\/ul>\r\nNote: Facetting feature requires the algolia JS search extension to work.",
+            "instructions": "Provide the facetting configuration here. If it is left blank, no facetting will be displayed. Facettable options must be configured and enabled in the search provider. \r\n<ul>\r\n <li>The \"attribute\" should match a enabled facet in the search provider. <\/li>\r\n <li>The \"label\" is the value that will show up in the facetting panel for the user.<\/li>\r\n<\/ul>\r\nNote: Facetting feature requires the algolia JS search extension to work.",
             "required": 0,
             "conditional_logic": 0,
             "wrapper": {
@@ -67,7 +67,7 @@
                     "parent_repeater": "field_690dfe47bba6b"
                 },
                 {
-                    "key": "field_690dff4fc6dbc",
+                    "key": "field_690e0517ced81",
                     "label": "Enabled",
                     "name": "enabled",
                     "aria-label": "",
@@ -81,10 +81,10 @@
                         "id": ""
                     },
                     "message": "",
-                    "default_value": 1,
-                    "ui": 0,
+                    "default_value": 0,
                     "ui_on_text": "",
                     "ui_off_text": "",
+                    "ui": 1,
                     "parent_repeater": "field_690dfe47bba6b"
                 }
             ]

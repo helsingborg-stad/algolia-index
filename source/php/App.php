@@ -10,14 +10,6 @@ class App
     public function __construct()
     {
 
-        add_filter('AlgoliaIndex/Facets', function($facets) {
-            $fieldValue = get_field('facetting', 'option');
-            if(is_array($fieldValue)) {
-                return array_merge($fieldValue, $facets);
-            }
-            return $facets;
-        });
-
         //Warn for missing api-keys, end execution
         if (!Options::isConfigured()) {
             add_action('admin_notices', array($this, 'displayAdminNotice'));
@@ -30,6 +22,7 @@ class App
             //Run plugin
             new \AlgoliaIndex\Index();
             new \AlgoliaIndex\Search();
+            new \AlgoliaIndex\Facetting();
         }
 
         //Admin pages

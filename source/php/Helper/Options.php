@@ -105,6 +105,24 @@ class Options
     }
 
     /**
+     * Get facetting option
+     *
+     * @return array $facetting
+     */
+    public static function facetting()
+    {
+        $fieldData = get_field('algolia_index_facetting', 'option');
+        if (empty($fieldData) || !is_array($fieldData)) {
+            return null;
+        }
+        $facetting = isset($fieldData) && is_array($fieldData) ? $fieldData : [];
+        return apply_filters(
+            'AlgoliaIndex/Options/Facetting',
+            $facetting
+        );
+    }
+
+    /**
      * Get option and enshure that all keys exists.
      *
      * @return array
@@ -115,7 +133,7 @@ class Options
             'application_id'    => get_field('algolia_index_application_id', 'option') ?: '', 
             'api_key'           => get_field('algolia_index_api_key', 'option') ?: '',
             'public_api_key'    => get_field('algolia_index_public_api_key', 'option') ?: '',
-            'index_name'        => get_field('algolia_index_index_name', 'option') ?: '',
+            'index_name'        => get_field('algolia_index_index_name', 'option') ?: ''
         ];
     }
 }

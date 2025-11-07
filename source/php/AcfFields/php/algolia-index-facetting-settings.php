@@ -8,10 +8,10 @@
         0 => array(
             'key' => 'field_690dfe47bba6b',
             'label' => __('Facetting', 'algolia-index'),
-            'name' => 'facetting',
+            'name' => 'algolia_index_facetting',
             'aria-label' => '',
             'type' => 'repeater',
-            'instructions' => __('Provide the facetting configuration here. If it is left blank, no facetting will be displayed. 
+            'instructions' => __('Provide the facetting configuration here. If it is left blank, no facetting will be displayed. Facettable options must be configured and enabled in the search provider. 
 <ul>
  <li>The "attribute" should match a enabled facet in the search provider. </li>
  <li>The "label" is the value that will show up in the facetting panel for the user.</li>
@@ -75,7 +75,7 @@ Note: Facetting feature requires the algolia JS search extension to work.', 'alg
                     'parent_repeater' => 'field_690dfe47bba6b',
                 ),
                 2 => array(
-                    'key' => 'field_690dff4fc6dbc',
+                    'key' => 'field_690e0517ced81',
                     'label' => __('Enabled', 'algolia-index'),
                     'name' => 'enabled',
                     'aria-label' => '',
@@ -89,10 +89,10 @@ Note: Facetting feature requires the algolia JS search extension to work.', 'alg
                         'id' => '',
                     ),
                     'message' => '',
-                    'default_value' => 1,
-                    'ui' => 0,
+                    'default_value' => 0,
                     'ui_on_text' => '',
                     'ui_off_text' => '',
+                    'ui' => 1,
                     'parent_repeater' => 'field_690dfe47bba6b',
                 ),
             ),
