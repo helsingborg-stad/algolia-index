@@ -4,7 +4,7 @@ namespace AlgoliaIndex\Helper;
 
 class Log
 {
-    private static $heading = "Algolia Index: "; 
+    private static $heading = 'Algolia Index: ';
 
     /**
      * Write error
@@ -13,6 +13,6 @@ class Log
      */
     public static function error($message)
     {
-      error_log(self::$heading . $message); 
+        error_log(self::$heading . $message);
     }
 }
