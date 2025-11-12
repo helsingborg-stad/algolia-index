@@ -14,8 +14,8 @@ class Index
     private static $_priority = 999;
 
     //Keys for keeping track of partial records
-    private static $partialObjectDistinctKey = "partial_object_distinct_key";
-    private static $partialObjectTotalAmount = "partial_object_total_amount";
+    private static $partialObjectDistinctKey = 'partial_object_distinct_key';
+    private static $partialObjectTotalAmount = 'partial_object_total_amount';
 
     //Maximum size of record
     private static $_nearMaxLimitSize = 9999;
@@ -28,16 +28,16 @@ class Index
     /**
      * Constructor, runs code on wordpress hooks.
      */
-    public function __construct($hookActions = true, ?AbstractProvider $searchDB = null)
+    public function __construct($hookActions = true, null|AbstractProvider $searchDB = null)
     {
         $this->wpPostObjectKeys = array_keys(get_object_vars(new \WP_Post((object) [])));
         $this->searchDB = $searchDB ?? Instance::getIndex();
 
         //Test bailout
-        if($hookActions === false) {
+        if ($hookActions === false) {
             return;
         }
-        
+
         //Add & update
         add_action('save_post', array($this, 'index'), self::$_priority);
 
@@ -57,26 +57,24 @@ class Index
      */
     public function delete($postId, $isSplitRecord = false)
     {
-
         if ($isSplitRecord && is_numeric($isSplitRecord)) {
+            //Declarations
+            $ids = [];
 
-          //Declarations
-            $ids  = [];
-
-          //Create all id's
+            //Create all id's
             for ($x = 0; $x <= $isSplitRecord; $x++) {
                 $ids[] = self::createChunkId(Id::getId($postId), $x);
             }
 
-          //Delete split records
-            if(!empty($ids)) {
+            //Delete split records
+            if (!empty($ids)) {
                 return $this->searchDB->deleteObjects($ids);
             } else {
                 Log::error('Could not create array of ids for deletion (splitrecord). Trying to delete single post.');
             }
         }
 
-      //Delete normal records
+        //Delete normal records
         return $this->searchDB->deleteObject(Id::getId($postId));
     }
 
@@ -89,28 +87,31 @@ class Index
     public function index($post)
     {
         list($post, $postId) = self::getPostAndPostId($post);
-        
+
         //Check if post should be removed
-        $shouldPostBeRemoved = [isset($_POST['exclude-from-search']) && $_POST['exclude-from-search'] == "true", get_post_status($post) !== 'publish'];
-        
-         if(in_array(true, $shouldPostBeRemoved)) {
+        $shouldPostBeRemoved = [
+            isset($_POST['exclude-from-search']) && $_POST['exclude-from-search'] == 'true',
+            get_post_status($post) !== 'publish',
+        ];
+
+        if (in_array(true, $shouldPostBeRemoved)) {
             if ($isSplitRecord = $this->isSplitRecord($postId)) {
                 self::delete($postId, $isSplitRecord);
             } else {
                 self::delete($postId);
             }
-        } 
-        
+        }
+
         //Check if is indexable post
         if (!self::shouldIndex($post)) {
             return;
-        } 
+        }
 
         //Delete split record (no check if has changed)
         if ($isSplitRecord = $this->isSplitRecord($postId)) {
             self::delete($postId, $isSplitRecord);
         } else {
-          //Check if the new post differs from indexed record (not applicable for split records)
+            //Check if the new post differs from indexed record (not applicable for split records)
             if (!$this->hasChanged($postId)) {
                 return;
             }
@@ -125,7 +126,6 @@ class Index
         //Esape html entities
         array_walk_recursive($post, function (&$value, $key) {
             if (in_array($key, $this->wpPostObjectKeys)) {
-
                 // Converts Int to string (ID)
                 if (!is_string($value)) {
                     $value = strval($value);
@@ -144,28 +144,19 @@ class Index
                 $splitRecord = self::utf8ize($splitRecord);
 
                 if (is_array($splitRecord) && !empty($splitRecord)) {
+                    //Catch error here.
+                    json_encode($splitRecord, JSON_THROW_ON_ERROR);
 
-                    //Catch error here. 
-                    json_encode($splitRecord, JSON_THROW_ON_ERROR); 
-
-                    $this->searchDB->saveObjects(
-                        $splitRecord,
-                        ['objectIDKey' => 'uuid']
-                    );
+                    $this->searchDB->saveObjects($splitRecord, ['objectIDKey' => 'uuid']);
                 }
             } else {
+                //Catch error here.
+                json_encode($post, JSON_THROW_ON_ERROR);
 
-                //Catch error here. 
-                json_encode($post, JSON_THROW_ON_ERROR); 
-
-                $this->searchDB->saveObject(
-                    $post,
-                    ['objectIDKey' => 'uuid']
-                );
+                $this->searchDB->saveObject($post, ['objectIDKey' => 'uuid']);
             }
-
-        } catch(\Exception $e) { 
-            error_log("Algolia Index: Could not save post. " . $post['ID']);
+        } catch (\Exception $e) {
+            error_log('Algolia Index: Could not save post. ' . $post['ID']);
         }
     }
 
@@ -190,7 +181,7 @@ class Index
         }
 
         //Check if published post (or any other allowed value)
-        if(!in_array(get_post_status($post), Indexable::postStatuses())) {
+        if (!in_array(get_post_status($post), Indexable::postStatuses())) {
             return false;
         }
 
@@ -200,7 +191,7 @@ class Index
         }
 
         //Do not index checkbox
-        if(get_post_meta($postId, 'exclude_from_search', true)) {
+        if (get_post_meta($postId, 'exclude_from_search', true)) {
             return false;
         }
 
@@ -237,8 +228,8 @@ class Index
         }
 
         //Filter out everything that dosen't matter
-        $indexRecord    = self::streamlineRecord($indexRecord);
-        $storedRecord   = self::streamlineRecord(self::getPost($postId));
+        $indexRecord = self::streamlineRecord($indexRecord);
+        $storedRecord = self::streamlineRecord(self::getPost($postId));
 
         //Diff posts
         if (serialize($indexRecord) != serialize($storedRecord)) {
@@ -256,24 +247,23 @@ class Index
      */
     private static function streamlineRecord($record)
     {
-
-      //List of fields to compare
+        //List of fields to compare
         $comparables = apply_filters('AlgoliaIndex/Compare', [
-        'ID',
-        'post_title',
-        'post_excerpt',
-        'content',
-        'permalink',
-        'thumbnail'
+            'ID',
+            'post_title',
+            'post_excerpt',
+            'content',
+            'permalink',
+            'thumbnail',
         ]);
 
-      //Prepare comparables
+        //Prepare comparables
         $record = (array) array_intersect_key($record, array_flip($comparables));
 
-      //Sort (resolves different orders)
+        //Sort (resolves different orders)
         array_multisort($record);
 
-      //Send back
+        //Send back
         return $record;
     }
 
@@ -288,28 +278,30 @@ class Index
         list($post, $postId) = self::getPostAndPostId($post);
 
         if ($post = get_post($post)) {
-
             /* Tags */
             $taxonomies = get_post_taxonomies($post);
             $tags = [];
 
             if (is_array($taxonomies) && !empty($taxonomies)) {
                 foreach ($taxonomies as $taxonomy) {
-                    if ($taxonomy !== 'category') {    
-                        $tags = array_merge(
-                            $tags,
-                            array_map(function (\WP_Term $term) {
+                    if ($taxonomy !== 'category') {
+                        $tags = array_merge($tags, array_map(
+                            function (\WP_Term $term) {
                                 return $term->name;
-                            }, wp_get_post_terms($postId, $taxonomy))
-                        );
+                            },
+                            wp_get_post_terms($postId, $taxonomy),
+                        ));
                     }
                 }
             }
 
             //Categories
-            $categories = array_map(function (\WP_Term $term) {
-                return $term->name;
-            }, wp_get_post_terms($postId, 'category'));
+            $categories = array_map(
+                function (\WP_Term $term) {
+                    return $term->name;
+                },
+                wp_get_post_terms($postId, 'category'),
+            );
 
             //Post details
             $result =  array(
@@ -342,8 +334,8 @@ class Index
             }
 
             //Remove multiple spaces
-            foreach($result as $key => $field) {
-                if(in_array($key, array('post_title', 'post_excerpt', 'content'))) {
+            foreach ($result as $key => $field) {
+                if (in_array($key, array('post_title', 'post_excerpt', 'content'))) {
                     $result[$key] = preg_replace('/\s+/', ' ', $field);
                 }
             }
@@ -354,47 +346,41 @@ class Index
         return null;
     }
 
-    public static function stripTags($content) {
+    public static function stripTags($content)
+    {
         $removeBodyOfTags = [
             'script',
             'style',
-            'noscript'
+            'noscript',
         ];
-    
-        $content = preg_replace(sprintf(
-            '/<(%s)\b[^>]*>.*?<\/\1>/is', 
-            implode('|', $removeBodyOfTags)
-        ), '', $content);
+
+        $content = preg_replace(sprintf('/<(%s)\b[^>]*>.*?<\/\1>/is', implode('|', $removeBodyOfTags)), '', $content);
 
         return strip_tags($content);
     }
 
-    public static function getTheExcerpt($post, int $numberOfWords = 55) {
-
+    public static function getTheExcerpt($post, int $numberOfWords = 55)
+    {
         $excerpt = get_the_excerpt($post);
 
         if (empty($excerpt) || strlen($excerpt) > 10) {
-            $excerpt = !empty($post->post_content)
-                ? $post->post_content
-                : $excerpt;
+            $excerpt = !empty($post->post_content) ? $post->post_content : $excerpt;
         }
 
-        $blocks = parse_blocks($excerpt); 
-        if(is_countable($blocks) && !empty($blocks)) {
-            $excerpt = ""; 
-            foreach($blocks as $block) {
-                $excerpt .= render_block($block) . " " . PHP_EOL; 
+        $blocks = parse_blocks($excerpt);
+        if (is_countable($blocks) && !empty($blocks)) {
+            $excerpt = '';
+            foreach ($blocks as $block) {
+                $excerpt .= render_block($block) . ' ' . PHP_EOL;
             }
         }
-        
+
         // Sanitizing excerpt
         $excerpt = preg_replace('/\[(.*?)\]/', '', $excerpt);
         $excerpt = preg_replace('/<style[^>]*>.*?<\/style>/is', '', $excerpt);
         $excerpt = preg_replace('/<script[^>]*>.*?<\/script>/is', '', $excerpt);
 
-        return wp_trim_words(
-            strip_tags($excerpt)
-        , $numberOfWords, "...");
+        return wp_trim_words(strip_tags($excerpt), $numberOfWords, '...');
     }
 
     /**
@@ -406,8 +392,10 @@ class Index
      */
     private function recordToLarge($record)
     {
-        if ($this->searchDB->shouldSplitRecord() 
-            && mb_strlen(serialize((array) $record), '8bit') >= self::$_nearMaxLimitSize) {
+        if (
+            $this->searchDB->shouldSplitRecord()
+            && mb_strlen(serialize((array) $record), '8bit') >= self::$_nearMaxLimitSize
+        ) {
             return apply_filters('AlgoliaIndex/RecordToLarge', true);
         }
         return apply_filters('AlgoliaIndex/RecordToLarge', false);
@@ -422,32 +410,28 @@ class Index
      */
     private static function splitRecord($record)
     {
-
-      //Response storage
+        //Response storage
         $result = array();
 
-      //Calculation of parts
-        $contentSize    = mb_strlen($record['content'], '8bit');
+        //Calculation of parts
+        $contentSize = mb_strlen($record['content'], '8bit');
         $additionalSize = mb_strlen(serialize(array_diff_key($record, array_flip(['content']))), '8bit');
         $numberOfChunks = (int) ceil($contentSize / (self::$_nearMaxLimitSize - $additionalSize));
-        $chunkSize      = (int) ceil($contentSize / $numberOfChunks); 
-        $contentChunks = str_split(
-            $record['content'], 
-            (empty($chunkSize) ? 1 : $chunkSize)
-        );
+        $chunkSize = (int) ceil($contentSize / $numberOfChunks);
+        $contentChunks = str_split($record['content'], empty($chunkSize) ? 1 : $chunkSize);
 
-      //Create final object to be indexed
+        //Create final object to be indexed
         foreach ($contentChunks as $chunkKey => $chunk) {
             $result[$chunkKey] = array_merge($record, [
-            'content' => $chunk,
-            self::$partialObjectDistinctKey => $record['uuid'],
-            self::$partialObjectTotalAmount => count($contentChunks)
+                'content' => $chunk,
+                self::$partialObjectDistinctKey => $record['uuid'],
+                self::$partialObjectTotalAmount => count($contentChunks),
             ]);
 
             $result[$chunkKey]['uuid'] = self::createChunkId($record['uuid'], $chunkKey);
         }
 
-      //Return chunked (or original record if failed to create chunked record).
+        //Return chunked (or original record if failed to create chunked record).
         return !empty($result) ? $result : [$record];
     }
 
@@ -461,7 +445,7 @@ class Index
     private static function createChunkId($uuid, $chunk)
     {
         if ($chunk != 0) {
-            return $uuid . "-part-" . $chunk;
+            return $uuid . '-part-' . $chunk;
         }
         return $uuid;
     }
@@ -478,7 +462,11 @@ class Index
     {
         $response = $this->searchDB->getObjects([Id::getId($postId)]);
 
-        if (!empty($response) && !empty($response[0]) && array_key_exists(self::$partialObjectDistinctKey, $response[0])) {
+        if (
+            !empty($response)
+            && !empty($response[0])
+            && array_key_exists(self::$partialObjectDistinctKey, $response[0])
+        ) {
             return $response[0][self::$partialObjectTotalAmount];
         }
 
@@ -508,7 +496,8 @@ class Index
      * @param mixed $data
      * @return mixed
      */
-    public static function utf8ize($data) {
+    public static function utf8ize($data)
+    {
         if (is_array($data)) {
             foreach ($data as $key => $value) {
                 $data[$key] = self::utf8ize($value);
