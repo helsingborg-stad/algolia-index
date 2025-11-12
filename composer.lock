@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "c23b73350b517a09038b2b5e4747e618",
+    "content-hash": "4a242d8572f8b572e3d460a0d3bb4728",
     "packages": [
         {
             "name": "algolia/algoliasearch-client-php",
@@ -286,16 +286,16 @@
     "packages-dev": [
         {
             "name": "carthage-software/mago",
-            "version": "0.26.1",
+            "version": "1.0.0-rc.1",
             "source": {
                 "type": "git",
                 "url": "https://github.com/carthage-software/mago.git",
-                "reference": "baad2c067e7be59af500683769b72ac356eac10f"
+                "reference": "d6a609706e99e943123609712dae3293488b2541"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/carthage-software/mago/zipball/baad2c067e7be59af500683769b72ac356eac10f",
-                "reference": "baad2c067e7be59af500683769b72ac356eac10f",
+                "url": "https://api.github.com/repos/carthage-software/mago/zipball/d6a609706e99e943123609712dae3293488b2541",
+                "reference": "d6a609706e99e943123609712dae3293488b2541",
                 "shasum": ""
             },
             "require": {
@@ -333,7 +333,7 @@
             ],
             "support": {
                 "issues": "https://github.com/carthage-software/mago/issues",
-                "source": "https://github.com/carthage-software/mago/tree/0.26.1"
+                "source": "https://github.com/carthage-software/mago/tree/1.0.0-rc.1"
             },
             "funding": [
                 {
@@ -341,7 +341,7 @@
                     "type": "github"
                 }
             ],
-            "time": "2025-06-29T23:11:29+00:00"
+            "time": "2025-11-12T07:35:55+00:00"
         },
         {
             "name": "doctrine/instantiator",
@@ -2246,7 +2246,9 @@
     ],
     "aliases": [],
     "minimum-stability": "stable",
-    "stability-flags": {},
+    "stability-flags": {
+        "carthage-software/mago": 5
+    },
     "prefer-stable": false,
     "prefer-lowest": false,
     "platform": {},
