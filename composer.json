@@ -45,7 +45,7 @@
         "test:coverage": "XDEBUG_MODE=coverage vendor/bin/phpunit --coverage-html .coverage/html --coverage-clover .coverage/clover.xml",
         "test:setup": "tests/install-wp-tests.sh",
         "lint": "vendor/bin/mago lint",
-        "lint:fix": "vendor/bin/mago lint --fix --format",
+        "fix": "vendor/bin/mago lint --format-after-fix --fix",
         "format": "vendor/bin/mago fmt"
     },
     "require-dev": {
