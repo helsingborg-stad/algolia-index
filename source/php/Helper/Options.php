@@ -124,10 +124,7 @@ class Options
             return null;
         }
         $facetting = isset($fieldData) && is_array($fieldData) ? $fieldData : [];
-        return apply_filters(
-            'AlgoliaIndex/Options/Facetting',
-            $facetting
-        );
+        return apply_filters('AlgoliaIndex/Options/Facetting', $facetting);
     }
 
     /**

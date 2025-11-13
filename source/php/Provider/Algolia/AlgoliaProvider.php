@@ -99,7 +99,7 @@ class AlgoliaProvider implements \AlgoliaIndex\Provider\AbstractProvider
             'categories',
             'author_name',
             'post_type_name',
-            'origin_site'
+            'origin_site',
         ]);
 
         //AttributesToSnippet
@@ -118,22 +118,19 @@ class AlgoliaProvider implements \AlgoliaIndex\Provider\AbstractProvider
             'author_name' => 'searchable(author_name)',
             'top_most_parent' => 'searchable(top_most_parent)'
         ]);
-  
-        $settings = array_merge(
-            [
-                'searchableAttributes'    => $searchableAttributes,
-                'attributeForDistinct'    => 'partial_object_distinct_key',
-                'distinct'                => true,
-                'hitsPerPage'             => apply_filters('AlgoliaIndex/HitsPerPage', 15),
-                'paginationLimitedTo'     => apply_filters('AlgoliaIndex/PaginationLimitedTo', 200),
-                'attributesToSnippet'     => $attributesToSnippet,
-                'snippetEllipsisText'     => apply_filters('AlgoliaIndex/SnippetEllipsisText', "..."),
-                'attributesForFaceting'   => array_values($attributesForFaceting),
-                'indexLanguages'          => !empty(get_bloginfo('language')) ? [substr(get_bloginfo('language'), 0, 2)] : [],
-                'removeWordsIfNoResults'  => 'allOptional'
-            ],
-            $settings
-        );
+
+        $settings = array_merge([
+            'searchableAttributes' => $searchableAttributes,
+            'attributeForDistinct' => 'partial_object_distinct_key',
+            'distinct' => true,
+            'hitsPerPage' => apply_filters('AlgoliaIndex/HitsPerPage', 15),
+            'paginationLimitedTo' => apply_filters('AlgoliaIndex/PaginationLimitedTo', 200),
+            'attributesToSnippet' => $attributesToSnippet,
+            'snippetEllipsisText' => apply_filters('AlgoliaIndex/SnippetEllipsisText', '...'),
+            'attributesForFaceting' => array_values($attributesForFaceting),
+            'indexLanguages' => !empty(get_bloginfo('language')) ? [substr(get_bloginfo('language'), 0, 2)] : [],
+            'removeWordsIfNoResults' => 'allOptional',
+        ], $settings);
 
         return $this->index->setSettings($settings);
     }
