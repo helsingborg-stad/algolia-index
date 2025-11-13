@@ -45,6 +45,7 @@ dist/.temp
 
 # ignore tests 
 .phpunit.result.cache
+phpunit-log.xml
 .coverage
 
 # -------------------------
