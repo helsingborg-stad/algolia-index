@@ -71,6 +71,7 @@ $removables = [
     'tsconfig.json',
     'mago.toml',
     '.vscode',
+    'phpunit-log.xml'
 
 ];
 
