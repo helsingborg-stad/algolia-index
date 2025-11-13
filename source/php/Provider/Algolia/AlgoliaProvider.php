@@ -113,7 +113,8 @@ class AlgoliaProvider implements \AlgoliaIndex\Provider\AbstractProvider
             'categories' => 'searchable(categories)',
             'post_type_name' => 'searchable(post_type_name)',
             'tags' => 'searchable(tags)',
-            'author_name' => 'searchable(author_name)'
+            'author_name' => 'searchable(author_name)',
+            'top_most_parent' => 'searchable(top_most_parent)'
         ]);
   
         $settings = array_merge(

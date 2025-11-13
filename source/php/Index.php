@@ -328,7 +328,8 @@ class Index
               'categories' => $categories,
               'algolia_timestamp' => current_time("Y-m-d H:i:s"),
               'post_type' => get_post_type($postId),
-              'post_type_name' => get_post_type_labels(get_post_type_object(get_post_type($postId)))->name
+              'post_type_name' => get_post_type_labels(get_post_type_object(get_post_type($postId)))->name,
+              'top_most_parent' => self::getTopMostParentTitle($postId)
             );
 
             //Site
@@ -520,5 +521,26 @@ class Index
             return mb_convert_encoding($data, 'UTF-8');
         }
         return $data;
+    }
+
+    /**
+     * Get the top most parent title of a post
+     * @param int $postId
+     * @return string
+     */
+    private static function getTopMostParentTitle($postId) {
+        $parentId           = wp_get_post_parent_id($postId);
+        $topMostParentId    = $postId;
+
+        while ($parentId) {
+            $topMostParentId = $parentId;
+            $parentId = wp_get_post_parent_id($topMostParentId);
+        }
+
+        if ($topMostParentId && $topMostParentId != $postId) {
+            return get_the_title($topMostParentId);
+        }
+
+        return get_the_title($postId);
     }
 }
