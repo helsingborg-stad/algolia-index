@@ -13,9 +13,9 @@
  * Domain Path:       /languages
  */
 
- // Protect agains direct file access
-if (! defined('WPINC')) {
-    die;
+// Protect agains direct file access
+if (!defined('WPINC')) {
+    die();
 }
 
 define('ALGOLIAINDEX_PATH', plugin_dir_path(__FILE__));
@@ -32,9 +32,7 @@ add_action('acf/init', function () {
         /** @noinspection PhpFullyQualifiedNameUsageInspection */
         $acfExportManager = new \AcfExportManager\AcfExportManager();
         $acfExportManager->setTextdomain('algolia-index');
-        $acfExportManager->setExportFolder(
-            ALGOLIAINDEX_PATH.'source/php/AcfFields/'
-        );
+        $acfExportManager->setExportFolder(ALGOLIAINDEX_PATH . 'source/php/AcfFields/');
         $acfExportManager->autoExport([
             'algolia-index-general-settings'        => 'group_68bfb24b7a4a2',
             'algolia-index-algolia-provider'        => 'group_68bfad0b6fc7b',
