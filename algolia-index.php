@@ -38,6 +38,7 @@ add_action('acf/init', function () {
         $acfExportManager->autoExport([
             'algolia-index-general-settings'        => 'group_68bfb24b7a4a2',
             'algolia-index-algolia-provider'        => 'group_68bfad0b6fc7b',
+            'algolia-index-facetting-settings'      => 'group_690dfe46d9b6e',
         ]);
         $acfExportManager->import();
     }

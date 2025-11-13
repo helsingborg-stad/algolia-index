@@ -9,6 +9,7 @@ class App
 
     public function __construct()
     {
+
         //Warn for missing api-keys, end execution
         if (!Options::isConfigured()) {
             add_action('admin_notices', array($this, 'displayAdminNotice'));
@@ -21,6 +22,7 @@ class App
             //Run plugin
             new \AlgoliaIndex\Index();
             new \AlgoliaIndex\Search();
+            new \AlgoliaIndex\Facetting();
         }
 
         //Admin pages

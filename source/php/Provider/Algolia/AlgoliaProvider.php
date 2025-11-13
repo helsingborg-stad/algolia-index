@@ -94,7 +94,10 @@ class AlgoliaProvider implements \AlgoliaIndex\Provider\AbstractProvider
             'content',
             'permalink',
             'tags',
-            'categories'
+            'categories',
+            'author_name',
+            'post_type_name',
+            'origin_site'
         ]);
 
         //AttributesToSnippet
@@ -105,8 +108,12 @@ class AlgoliaProvider implements \AlgoliaIndex\Provider\AbstractProvider
         ]);
 
         //Facetingattributes
-        $attributesForFaceting = apply_filters('AlgoliaIndex/AttributesToSnippet', [
-            'searchable(origin_site)'
+        $attributesForFaceting = apply_filters('AlgoliaIndex/AttributesForFacetting', [
+            'origin_site' => 'searchable(origin_site)',
+            'categories' => 'searchable(categories)',
+            'post_type_name' => 'searchable(post_type_name)',
+            'tags' => 'searchable(tags)',
+            'author_name' => 'searchable(author_name)'
         ]);
   
         $settings = array_merge(
@@ -118,7 +125,7 @@ class AlgoliaProvider implements \AlgoliaIndex\Provider\AbstractProvider
                 'paginationLimitedTo'     => apply_filters('AlgoliaIndex/PaginationLimitedTo', 200),
                 'attributesToSnippet'     => $attributesToSnippet,
                 'snippetEllipsisText'     => apply_filters('AlgoliaIndex/SnippetEllipsisText', "..."),
-                'attributesForFaceting'   => $attributesForFaceting,
+                'attributesForFaceting'   => array_values($attributesForFaceting),
                 'indexLanguages'          => !empty(get_bloginfo('language')) ? [substr(get_bloginfo('language'), 0, 2)] : [],
                 'removeWordsIfNoResults'  => 'allOptional'
             ],
