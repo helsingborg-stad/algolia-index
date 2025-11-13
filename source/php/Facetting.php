@@ -17,7 +17,7 @@ class Facetting
      * @param   bool  $includeDisabled  Whether to include disabled facets
      * @return  array                   The merged facets
      */
-    public function addFacettingOptions($existingFacets): ?array
+    public function addFacettingOptions($existingFacets): null|array
     {
         $facets = \AlgoliaIndex\Helper\Options::facetting(true) ?? [];
         $facets =  array_merge($facets, $existingFacets);
