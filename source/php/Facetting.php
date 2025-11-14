@@ -15,7 +15,7 @@ class Facetting
      * @param   array $existingFacets   The existing facets
      * @return  array                   The merged facets
      */
-    public function addFacettingOptions($existingFacets): ?array
+    public function addFacettingOptions($existingFacets): null|array
     {
         $facets = \AlgoliaIndex\Helper\Options::facetting() ?? [];
         return array_merge($facets, $existingFacets);

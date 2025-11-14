@@ -11,7 +11,7 @@ class AlgoliaFactory
         return new AlgoliaProvider(
             \AlgoliaIndex\Helper\Options::applicationId(),
             \AlgoliaIndex\Helper\Options::apiKey(),
-            \AlgoliaIndex\Helper\Options::indexName()
+            \AlgoliaIndex\Helper\Options::indexName(),
         );
     }
 }
