@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "02de261c81b0f4c6957f0bd45606d5f5",
+    "content-hash": "b1712ba5f322fc14f710d2eea277e05e",
     "packages": [
         {
             "name": "algolia/algoliasearch-client-php",
@@ -82,23 +82,23 @@
         },
         {
             "name": "helsingborg-stad/wputilservice",
-            "version": "0.2.44",
+            "version": "0.2.46",
             "source": {
                 "type": "git",
                 "url": "https://github.com/helsingborg-stad/wputilservice.git",
-                "reference": "8f8b1d4d781726b87b89d7d2efd3e122ac3844f6"
+                "reference": "e8a14d961b850987ef0714fa7dc03b15c19dd290"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/helsingborg-stad/wputilservice/zipball/8f8b1d4d781726b87b89d7d2efd3e122ac3844f6",
-                "reference": "8f8b1d4d781726b87b89d7d2efd3e122ac3844f6",
+                "url": "https://api.github.com/repos/helsingborg-stad/wputilservice/zipball/e8a14d961b850987ef0714fa7dc03b15c19dd290",
+                "reference": "e8a14d961b850987ef0714fa7dc03b15c19dd290",
                 "shasum": ""
             },
             "require": {
                 "php": "^8.2"
             },
             "require-dev": {
-                "carthage-software/mago": "^0.26.1",
+                "carthage-software/mago": "^1.0.0-rc.1",
                 "helsingborg-stad/wpservice": "^2",
                 "johnpbloch/wordpress": "^6.6",
                 "php-stubs/wordpress-stubs": "^6.6",
@@ -124,9 +124,9 @@
             "description": "Simplifies WordPress development by providing a centralized WpUtilService that exposes a WordPress api wrapped in a streamlined manner. Simplify your development workflow and enhance WordPress integration with ease.",
             "support": {
                 "issues": "https://github.com/helsingborg-stad/wputilservice/issues",
-                "source": "https://github.com/helsingborg-stad/wputilservice/tree/0.2.44"
+                "source": "https://github.com/helsingborg-stad/wputilservice/tree/0.2.46"
             },
-            "time": "2025-11-04T14:36:21+00:00"
+            "time": "2025-11-14T13:05:33+00:00"
         },
         {
             "name": "psr/http-message",
