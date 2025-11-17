@@ -18,7 +18,7 @@ interface AbstractProvider
 
     public function saveObjects(array $objects, array $options = []);
 
-    public function getObjects(array $objectIds) : array;
+    public function getObjects(array $objectIds): array;
 
-    public function shouldSplitRecord() : bool;
+    public function shouldSplitRecord(): bool;
 }

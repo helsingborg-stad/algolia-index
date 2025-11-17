@@ -8,17 +8,15 @@ class ProviderFactory
 {
     public static function getProviders()
     {
-        return apply_filters("AlgoliaIndex/Provider/Factory", [
-            'algolia' => fn () => \AlgoliaIndex\Provider\Algolia\AlgoliaFactory::createFromEnv()    
+        return apply_filters('AlgoliaIndex/Provider/Factory', [
+            'algolia' => fn() => \AlgoliaIndex\Provider\Algolia\AlgoliaFactory::createFromEnv(),
         ]);
     }
-    
+
     public static function createFromEnv($provider = null): AbstractProvider
     {
         $providers = self::getProviders();
-        $provider = !empty($provider) 
-            ? $provider 
-            : get_field('algolia_index_search_provider', 'option') ?? 'algolia';
+        $provider = !empty($provider) ? $provider : get_field('algolia_index_search_provider', 'option') ?? 'algolia';
 
         if (!is_string($provider)) {
             throw new \InvalidArgumentException('Provider name must be a string');

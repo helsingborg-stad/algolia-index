@@ -8,8 +8,7 @@ use \AlgoliaIndex\Helper\Options as Options;
 
 class Bulk
 {
-
-    private $prefix = "algolia-index" . " ";
+    private $prefix = 'algolia-index' . ' ';
 
     public function __construct()
     {
@@ -31,28 +30,27 @@ class Bulk
         $databaseIndex = new Index(false, $instance);
 
         if (!Options::isConfigured()) {
-            \WP_CLI::log("Search must be configured before indexing, terminating...");
+            \WP_CLI::log('Search must be configured before indexing, terminating...');
             return;
         }
 
         //Send settings
-        if (isset($assocArgs['settings']) && $assocArgs['settings'] == "true") {
-            \WP_CLI::log("Sending settings...");
+        if (isset($assocArgs['settings']) && $assocArgs['settings'] == 'true') {
+            \WP_CLI::log('Sending settings...');
             $instance->setSettings();
         }
 
         // Clear index if flag is true
-        if (isset($assocArgs['clearindex']) && $assocArgs['clearindex'] == "true") {
-            \WP_CLI::log("Clearing index...");
+        if (isset($assocArgs['clearindex']) && $assocArgs['clearindex'] == 'true') {
+            \WP_CLI::log('Clearing index...');
             $instance->clearObjects();
         }
 
-        \WP_CLI::log("Starting index build for site " . get_option('home'));
+        \WP_CLI::log('Starting index build for site ' . get_option('home'));
 
         $postTypes = Indexable::postTypes();
 
         if (is_array($postTypes) && !empty($postTypes)) {
-
             global $post;
             $globalPost = $post;
 
@@ -60,7 +58,6 @@ class Bulk
                 $posts = (array) $this->getPosts($postType);
                 if (is_array($posts) && !empty($posts)) {
                     foreach ($posts as $postToIndex) {
-
                         // Set global post object to current post to enable using it in code being indexed.
                         $post = $postToIndex;
 
@@ -71,12 +68,11 @@ class Bulk
             }
 
             $post = $globalPost;
-
         } else {
-            \WP_CLI::error("Could not find any indexable posttypes. This will occur when no content is public.");
+            \WP_CLI::error('Could not find any indexable posttypes. This will occur when no content is public.');
         }
 
-        \WP_CLI::success("Build done!");
+        \WP_CLI::success('Build done!');
     }
 
     /**
