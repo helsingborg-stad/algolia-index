@@ -57,6 +57,5 @@
         "allow-plugins": {
             "carthage-software/mago": true
         }
-    },
-    "version": "3.4.0"
+    }
 }
