@@ -125,16 +125,13 @@ class Options
         }
         $facetting = isset($fieldData) && is_array($fieldData) ? $fieldData : [];
 
-        if($includeDisabled === false) {
-            $facetting = array_filter($facetting, function($facet) {
+        if ($includeDisabled === false) {
+            $facetting = array_filter($facetting, function ($facet) {
                 return !isset($facet['enabled']) || $facet['enabled'] === true;
             });
         }
 
-        return apply_filters(
-            'AlgoliaIndex/Options/Facetting',
-            $facetting
-        );
+        return apply_filters('AlgoliaIndex/Options/Facetting', $facetting);
     }
 
     /**

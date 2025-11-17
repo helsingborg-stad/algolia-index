@@ -304,24 +304,24 @@ class Index
             );
 
             //Post details
-            $result =  array(
-              'uuid' => Id::getId($postId),
-              'ID' => $post->ID,
-              'post_title' => apply_filters('the_title', $post->post_title),
-              'post_excerpt' => self::getTheExcerpt($post),
-              'content' => self::stripTags(apply_filters('the_content', $post->post_content)),
-              'permalink' => get_permalink($post->ID),
-              'post_date' => strtotime($post->post_date),
-              'post_date_formatted' => date(get_option('date_format'), strtotime($post->post_date)),
-              'post_modified' => strtotime($post->post_modified),
-              'thumbnail' => get_the_post_thumbnail_url($post) ? get_the_post_thumbnail_url($post, [480, 270]) : '',
-              'thumbnail_alt' => get_post_meta(get_post_thumbnail_id($post->ID), '_wp_attachment_image_alt', true),
-              'tags' => $tags,
-              'categories' => $categories,
-              'algolia_timestamp' => current_time("Y-m-d H:i:s"),
-              'post_type' => get_post_type($postId),
-              'post_type_name' => get_post_type_labels(get_post_type_object(get_post_type($postId)))->name,
-              'top_most_parent' => self::getTopMostParentTitle($postId)
+            $result = array(
+                'uuid' => Id::getId($postId),
+                'ID' => $post->ID,
+                'post_title' => apply_filters('the_title', $post->post_title),
+                'post_excerpt' => self::getTheExcerpt($post),
+                'content' => self::stripTags(apply_filters('the_content', $post->post_content)),
+                'permalink' => get_permalink($post->ID),
+                'post_date' => strtotime($post->post_date),
+                'post_date_formatted' => date(get_option('date_format'), strtotime($post->post_date)),
+                'post_modified' => strtotime($post->post_modified),
+                'thumbnail' => get_the_post_thumbnail_url($post) ? get_the_post_thumbnail_url($post, [480, 270]) : '',
+                'thumbnail_alt' => get_post_meta(get_post_thumbnail_id($post->ID), '_wp_attachment_image_alt', true),
+                'tags' => $tags,
+                'categories' => $categories,
+                'algolia_timestamp' => current_time('Y-m-d H:i:s'),
+                'post_type' => get_post_type($postId),
+                'post_type_name' => get_post_type_labels(get_post_type_object(get_post_type($postId)))->name,
+                'top_most_parent' => self::getTopMostParentTitle($postId),
             );
 
             //Site
@@ -517,9 +517,10 @@ class Index
      * @param int $postId
      * @return string
      */
-    private static function getTopMostParentTitle($postId) {
-        $parentId           = wp_get_post_parent_id($postId);
-        $topMostParentId    = $postId;
+    private static function getTopMostParentTitle($postId)
+    {
+        $parentId = wp_get_post_parent_id($postId);
+        $topMostParentId = $postId;
 
         while ($parentId) {
             $topMostParentId = $parentId;

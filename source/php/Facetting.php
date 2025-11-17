@@ -20,7 +20,7 @@ class Facetting
     public function addFacettingOptions($existingFacets): null|array
     {
         $facets = \AlgoliaIndex\Helper\Options::facetting(true) ?? [];
-        $facets =  array_merge($facets, $existingFacets);
+        $facets = array_merge($facets, $existingFacets);
         return $facets;
     }
 

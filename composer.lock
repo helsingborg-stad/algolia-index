@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "b1712ba5f322fc14f710d2eea277e05e",
+    "content-hash": "381fbc47442ab18e14aab5f4390dfc4c",
     "packages": [
         {
             "name": "algolia/algoliasearch-client-php",
@@ -286,16 +286,16 @@
     "packages-dev": [
         {
             "name": "carthage-software/mago",
-            "version": "1.0.0-rc.2",
+            "version": "1.0.0-rc.3",
             "source": {
                 "type": "git",
                 "url": "https://github.com/carthage-software/mago.git",
-                "reference": "4b30882a6a9159700687f40d523d50d637797172"
+                "reference": "ed0c848ab54763e0446a813dc922fb9ce0625601"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/carthage-software/mago/zipball/4b30882a6a9159700687f40d523d50d637797172",
-                "reference": "4b30882a6a9159700687f40d523d50d637797172",
+                "url": "https://api.github.com/repos/carthage-software/mago/zipball/ed0c848ab54763e0446a813dc922fb9ce0625601",
+                "reference": "ed0c848ab54763e0446a813dc922fb9ce0625601",
                 "shasum": ""
             },
             "require": {
@@ -333,7 +333,7 @@
             ],
             "support": {
                 "issues": "https://github.com/carthage-software/mago/issues",
-                "source": "https://github.com/carthage-software/mago/tree/1.0.0-rc.2"
+                "source": "https://github.com/carthage-software/mago/tree/1.0.0-rc.3"
             },
             "funding": [
                 {
@@ -341,7 +341,7 @@
                     "type": "github"
                 }
             ],
-            "time": "2025-11-14T05:37:34+00:00"
+            "time": "2025-11-15T23:54:54+00:00"
         },
         {
             "name": "myclabs/deep-copy",
