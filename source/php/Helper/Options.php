@@ -109,13 +109,20 @@ class Options
      *
      * @return array $facetting
      */
-    public static function facetting()
+    public static function facetting($includeDisabled = true)
     {
         $fieldData = get_field('algolia_index_facetting', 'option');
         if (empty($fieldData) || !is_array($fieldData)) {
             return null;
         }
         $facetting = isset($fieldData) && is_array($fieldData) ? $fieldData : [];
+
+        if($includeDisabled === false) {
+            $facetting = array_filter($facetting, function($facet) {
+                return !isset($facet['enabled']) || $facet['enabled'] === true;
+            });
+        }
+
         return apply_filters(
             'AlgoliaIndex/Options/Facetting',
             $facetting
