@@ -6,6 +6,8 @@ use AlgoliaIndex\Provider\Algolia\AlgoliaProvider;
 
 class ProviderFactory
 {
+    private const DEFAULT_PROVIDER = 'algolia';
+
     public static function getProviders()
     {
         return apply_filters('AlgoliaIndex/Provider/Factory', [
@@ -17,14 +19,14 @@ class ProviderFactory
     {
         $providers = self::getProviders();
 
-        $provider = !empty($provider) ? $provider : get_field('algolia_index_search_provider', 'option') ?? 'algolia';
+        $provider = !empty($provider) ? $provider : get_field('algolia_index_search_provider', 'option') ?? self::DEFAULT_PROVIDER;
 
         if (!is_string($provider)) {
             throw new \InvalidArgumentException('Provider name must be a string');
         }
 
         if (!array_key_exists($provider, $providers)) {
-            throw new \InvalidArgumentException('Provider not found: ' . $provider . ' in [' . implode(', ', array_keys($providers)) . ']');
+            $provider = self::DEFAULT_PROVIDER;
         }
 
         if (!is_callable($providers[$provider])) {
