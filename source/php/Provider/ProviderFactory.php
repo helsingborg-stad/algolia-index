@@ -16,6 +16,7 @@ class ProviderFactory
     public static function createFromEnv($provider = null): AbstractProvider
     {
         $providers = self::getProviders();
+
         $provider = !empty($provider) ? $provider : get_field('algolia_index_search_provider', 'option') ?? 'algolia';
 
         if (!is_string($provider)) {
@@ -23,8 +24,9 @@ class ProviderFactory
         }
 
         if (!array_key_exists($provider, $providers)) {
-            throw new \InvalidArgumentException('Provider not found');
+            throw new \InvalidArgumentException('Provider not found: ' . $provider . ' in [' . implode(', ', array_keys($providers)) . ']');
         }
+
         if (!is_callable($providers[$provider])) {
             throw new \InvalidArgumentException('Provider is not callable');
         }
