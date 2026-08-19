@@ -8,20 +8,11 @@ class App
 {
     public function __construct()
     {
-        //Warn for missing api-keys, end execution
-        if (!Options::isConfigured()) {
-            add_action('admin_notices', array($this, 'displayAdminNotice'));
-        }
-
         //Config page
         new \AlgoliaIndex\Admin\Settings();
 
-        if (Options::isConfigured()) {
-            //Run plugin
-            new \AlgoliaIndex\Index();
-            new \AlgoliaIndex\Search();
-            new \AlgoliaIndex\Facetting();
-        }
+        // Defer ACF-dependent configuration reads until ACF is initialized.
+        add_action('acf/init', array($this, 'initializeConfiguredFeatures'), 20);
 
         //Admin pages
         new \AlgoliaIndex\Admin\Post();
@@ -30,6 +21,23 @@ class App
         if (defined('WP_CLI') && WP_CLI == true) {
             new \AlgoliaIndex\Bulk();
         }
+    }
+
+    /**
+     * Initialize features that depend on configuration stored in ACF.
+     *
+     * @return void
+     */
+    public function initializeConfiguredFeatures()
+    {
+        if (!Options::isConfigured()) {
+            add_action('admin_notices', array($this, 'displayAdminNotice'));
+            return;
+        }
+
+        new \AlgoliaIndex\Index();
+        new \AlgoliaIndex\Search();
+        new \AlgoliaIndex\Facetting();
     }
 
     /**
